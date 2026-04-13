@@ -1,0 +1,921 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#070709;--s1:#0c0c10;--s2:#111116;--s3:#16161d;
+  --b1:#1f1f28;--b2:#2a2a36;--b3:#353544;
+  --cyan:#00d4ff;--green:#00e5a0;--amber:#f5a623;--red:#ff4d6d;--violet:#9d7eff;
+  --text:#e8e8f2;--dim:#8080a0;--muted:#3a3a50;
+  --mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px}
+
+/* ── TOP NAV ── */
+.topbar{background:var(--s1);border-bottom:1px solid var(--b1);padding:0 32px;display:flex;align-items:center;gap:24px;height:48px}
+.tb-logo{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:3px;font-weight:600}
+.tb-sep{width:1px;height:20px;background:var(--b1)}
+.tb-name{font-size:13px;font-weight:600;color:var(--text)}
+.tb-role{font-size:11px;color:var(--dim);font-family:var(--mono)}
+.tb-tabs{display:flex;gap:0;margin-left:auto}
+.tb-tab{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:0 18px;height:48px;display:flex;align-items:center;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap}
+.tb-tab:hover{color:var(--text)}
+.tb-tab.on{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tb-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--green)}
+.tb-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── PAGES ── */
+.page{display:none}.page.on{display:block}
+
+/* ── OVERVIEW PAGE ── */
+
+/* HERO BAND */
+.hero-band{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b1)}
+.hero-left{padding:48px 40px;border-right:1px solid var(--b1)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.hero-name{font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:8px}
+.hero-title{font-size:1.1rem;font-weight:400;color:var(--dim);margin-bottom:28px}
+.hero-bio{font-size:13px;color:var(--dim);line-height:1.8;max-width:480px;margin-bottom:32px}
+.hero-links{display:flex;gap:12px;flex-wrap:wrap}
+.hl{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:8px 16px;border-radius:4px;border:1px solid var(--b2);color:var(--dim);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.hl:hover{border-color:var(--cyan);color:var(--cyan)}
+.hl.primary{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.06)}
+
+.hero-right{padding:0;display:flex;flex-direction:column}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;flex:1}
+.metric-cell{padding:28px 24px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);position:relative;overflow:hidden}
+.metric-cell:nth-child(2n){border-right:none}
+.metric-cell:nth-child(3),.metric-cell:nth-child(4){border-bottom:none}
+.mc-label{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.mc-val{font-family:var(--mono);font-size:2rem;font-weight:600;color:#fff;margin-bottom:4px;line-height:1}
+.mc-sub{font-size:11px;color:var(--dim)}
+.mc-bar{height:2px;background:var(--b1);border-radius:1px;margin-top:12px;overflow:hidden}
+.mc-bar-fill{height:100%;border-radius:1px;transition:width 1.5s ease}
+
+/* SKILLS SECTION */
+.skills-section{border-bottom:1px solid var(--b1)}
+.section-hdr{padding:20px 32px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:12px}
+.sh-label{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:3px;text-transform:uppercase}
+.sh-count{font-family:var(--mono);font-size:9px;color:var(--cyan);background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);border-radius:3px;padding:2px 7px}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0}
+.skill-cell{padding:20px 24px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1)}
+.skill-cell:hover{background:var(--s2)}
+.sc-cat{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.sc-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.sc-bar{height:2px;background:var(--b1);border-radius:1px;overflow:hidden;margin-bottom:4px}
+.sc-fill{height:100%;border-radius:1px;transition:width 1.5s ease}
+.sc-level{font-family:var(--mono);font-size:9px;color:var(--dim)}
+
+/* PROOF OF WORK — heatmap */
+.pow-section{border-bottom:1px solid var(--b1)}
+.heatmap-wrap{padding:24px 32px;overflow-x:auto}
+.heatmap{display:flex;gap:3px;align-items:flex-end}
+.hm-col{display:flex;flex-direction:column;gap:3px}
+.hm-cell{width:14px;height:14px;border-radius:2px;background:var(--b1);cursor:pointer;transition:transform .1s}
+.hm-cell:hover{transform:scale(1.3)}
+.hm-cell.done-1{background:rgba(0,229,160,.25)}
+.hm-cell.done-2{background:rgba(0,229,160,.5)}
+.hm-cell.done-3{background:rgba(0,229,160,.75)}
+.hm-cell.done-4{background:var(--green)}
+.hm-legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-family:var(--mono);font-size:9px;color:var(--dim)}
+.hm-swatch{width:12px;height:12px;border-radius:2px}
+
+/* PROJECTS */
+.projects-section{border-bottom:1px solid var(--b1)}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0}
+.proj-card{padding:28px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);transition:background .2s}
+.proj-card:hover{background:var(--s2)}
+.proj-status{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.status-dot{width:6px;height:6px;border-radius:50%}
+.proj-name{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px}
+.proj-desc{font-size:12px;color:var(--dim);line-height:1.7;margin-bottom:16px}
+.proj-stack{display:flex;gap:6px;flex-wrap:wrap}
+.stack-tag{font-family:var(--mono);font-size:9px;color:var(--cyan);border:1px solid rgba(0,212,255,.15);border-radius:3px;padding:3px 8px;background:rgba(0,212,255,.04)}
+.proj-link{margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:1px;cursor:pointer;transition:color .2s}
+.proj-link:hover{color:var(--cyan)}
+
+/* DISCIPLINE PANEL */
+.discipline-section{border-bottom:1px solid var(--b1);display:grid;grid-template-columns:1fr 1fr 1fr}
+.disc-cell{padding:28px 32px;border-right:1px solid var(--b1)}
+.disc-cell:last-child{border-right:none}
+.disc-title{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.disc-big{font-family:var(--mono);font-size:3rem;font-weight:600;color:#fff;line-height:1;margin-bottom:6px}
+.disc-sub{font-size:12px;color:var(--dim);margin-bottom:16px}
+.streak-blocks{display:flex;gap:3px;flex-wrap:wrap;margin-top:8px}
+.sb{width:18px;height:18px;border-radius:2px;background:var(--b1)}
+.sb.hit{background:var(--green)}
+.sb.miss{background:rgba(255,77,109,.3)}
+
+/* CURRICULUM SECTION */
+.curr-section{border-bottom:1px solid var(--b1)}
+.curr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0}
+.curr-cell{padding:20px 24px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1)}
+.curr-week{font-family:var(--mono);font-size:9px;letter-spacing:2px;margin-bottom:8px}
+.curr-topic{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px}
+.curr-desc{font-size:11px;color:var(--dim);line-height:1.6;margin-bottom:10px}
+.curr-bar{height:2px;background:var(--b1);border-radius:1px;overflow:hidden}
+.curr-fill{height:100%;border-radius:1px;transition:width 1.5s ease}
+.curr-status{font-family:var(--mono);font-size:9px;margin-top:6px}
+
+/* ── SQL CONSOLE PAGE ── */
+.console-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 48px)}
+.con-sidebar{background:var(--s1);border-right:1px solid var(--b1);padding:0;overflow-y:auto}
+.con-main{display:flex;flex-direction:column;background:var(--bg)}
+.sb-hdr{padding:14px 16px;border-bottom:1px solid var(--b1);font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
+.sb-tbl{border-bottom:1px solid var(--b1)}
+.sb-tbl-hdr{padding:10px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:background .15s}
+.sb-tbl-hdr:hover{background:var(--s2)}
+.sb-tbl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sb-tbl-name{font-family:var(--mono);font-size:11px}
+.sb-tbl-count{margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--muted)}
+.sb-cols{background:rgba(0,0,0,.2);padding:4px 16px 8px 30px;display:none}
+.sb-col{font-family:var(--mono);font-size:9px;color:var(--muted);padding:2px 0;display:flex;gap:6px;align-items:center}
+.sb-col::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--b3);flex-shrink:0}
+.sb-examples{border-bottom:1px solid var(--b1)}
+.sb-ex{padding:8px 16px;font-size:11px;color:var(--dim);cursor:pointer;transition:all .15s;border:none;background:none;text-align:left;width:100%;border-bottom:1px solid var(--b1);font-family:var(--sans)}
+.sb-ex:hover{background:var(--s2);color:var(--text)}
+.sb-ex:last-child{border:none}
+
+/* EDITOR */
+.ed-bar{background:var(--s1);border-bottom:1px solid var(--b1);padding:10px 16px;display:flex;align-items:center;gap:10px}
+.ed-dots{display:flex;gap:5px}
+.ed-dot{width:10px;height:10px;border-radius:50%}
+.ed-title{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:1px}
+.ed-live{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--violet);letter-spacing:1px;border:1px solid rgba(157,126,255,.2);border-radius:10px;padding:3px 9px;background:rgba(157,126,255,.04)}
+.ed-live-dot{width:5px;height:5px;border-radius:50%;background:var(--violet);animation:blink 1.5s infinite}
+.run-btn{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:7px 16px;border-radius:4px;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);color:var(--cyan);cursor:pointer;transition:all .2s}
+.run-btn:hover:not(:disabled){background:rgba(0,212,255,.12);border-color:var(--cyan)}
+.run-btn:disabled{opacity:.35;cursor:not-allowed}
+.clr-btn{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:7px 12px;border-radius:4px;border:1px solid var(--b2);background:transparent;color:var(--dim);cursor:pointer;transition:all .2s}
+.clr-btn:hover{border-color:var(--b3);color:var(--text)}
+
+.ed-inner{position:relative;background:var(--bg)}
+.ed-linenum{position:absolute;left:0;top:0;bottom:0;width:44px;padding:14px 0;font-family:var(--mono);font-size:12px;line-height:22px;color:var(--muted);text-align:right;padding-right:10px;user-select:none;border-right:1px solid var(--b1);overflow:hidden;background:var(--s1)}
+.ed-hl{position:absolute;top:0;left:44px;right:0;padding:14px;font-family:var(--mono);font-size:12px;line-height:22px;white-space:pre-wrap;word-break:break-all;pointer-events:none;overflow:hidden;color:transparent}
+.ed-ta{position:relative;width:100%;min-height:160px;padding:14px 14px 14px 58px;font-family:var(--mono);font-size:12px;line-height:22px;background:transparent;border:none;color:var(--text);resize:vertical;outline:none;caret-color:var(--cyan)}
+
+/* RESULTS */
+.res-bar{background:var(--s1);border-bottom:1px solid var(--b1);border-top:1px solid var(--b1);padding:9px 16px;display:flex;align-items:center;gap:10px}
+.res-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase}
+.res-msg{font-family:var(--mono);font-size:10px;color:var(--dim)}
+.res-table-wrap{overflow:auto}
+.res-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+.res-table th{padding:9px 16px;text-align:left;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:var(--s1);border-bottom:1px solid var(--b1);font-weight:500;white-space:nowrap;color:var(--dim)}
+.res-table td{padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.03);white-space:nowrap}
+.res-table tr:hover td{background:rgba(255,255,255,.02)}
+.res-empty{padding:40px 24px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.err-panel{background:#0e0508;border-left:2px solid var(--red);padding:16px 20px;font-family:var(--mono);font-size:11px;color:#ff8099;line-height:1.8}
+
+/* SQL highlight */
+.kw{color:#9d7eff;font-weight:500}.fn{color:#f5a623}.str{color:#00e5a0}.num{color:#ff4d6d}.cmt{color:#2a2a3a}
+
+@media(max-width:780px){
+  .hero-band{grid-template-columns:1fr}
+  .hero-right{border-top:1px solid var(--b1)}
+  .discipline-section{grid-template-columns:1fr}
+  .disc-cell{border-right:none;border-bottom:1px solid var(--b1)}
+  .console-layout{grid-template-columns:1fr}
+  .con-sidebar{display:none}
+}
+</style>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Jeff Floyd — Data Engineering Portfolio. Skills, proof of work, and live SQL console for employers.</h2>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="tb-logo">DE//PORTFOLIO</div>
+  <div class="tb-sep"></div>
+  <div>
+    <div class="tb-name">Jeff Floyd</div>
+    <div class="tb-role">Data Engineer · London</div>
+  </div>
+  <div class="tb-tabs">
+    <button class="tb-tab on" onclick="nav('overview')">Overview</button>
+    <button class="tb-tab" onclick="nav('console')">SQL Console</button>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb-status"><div class="tb-dot"></div>Training active</div>
+</div>
+
+<!-- ══════════════════════════════════
+     OVERVIEW PAGE
+══════════════════════════════════ -->
+<div class="page on" id="page-overview">
+
+  <!-- HERO BAND -->
+  <div class="hero-band">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Data Engineer · Available for hire</div>
+      <div class="hero-name">Jeff Floyd</div>
+      <div class="hero-title">Building production-grade data pipelines</div>
+      <div class="hero-bio">
+        I'm a data engineer with hands-on experience building ETL pipelines, orchestrating workflows with Apache Airflow, processing data at scale with PySpark, and modelling with dbt. I document everything, ship to GitHub, and treat consistency as a skill. The stats on this page are live — pulled from my actual training log.
+      </div>
+      <div class="hero-links">
+        <a class="hl primary" href="#">github.com/jefff</a>
+        <a class="hl" href="#">LinkedIn</a>
+        <a class="hl" href="#">jefff@email.com</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="metric-grid">
+        <div class="metric-cell">
+          <div class="mc-label">SQL Problems Solved</div>
+          <div class="mc-val" id="m-sql">0</div>
+          <div class="mc-sub">LeetCode · med &amp; hard</div>
+          <div class="mc-bar"><div class="mc-bar-fill" id="mb-sql" style="background:var(--cyan);width:0%"></div></div>
+        </div>
+        <div class="metric-cell">
+          <div class="mc-label">Applications Sent</div>
+          <div class="mc-val" id="m-apps">0</div>
+          <div class="mc-sub">tailored cover letter each</div>
+          <div class="mc-bar"><div class="mc-bar-fill" id="mb-apps" style="background:var(--amber);width:0%"></div></div>
+        </div>
+        <div class="metric-cell">
+          <div class="mc-label">Projects on GitHub</div>
+          <div class="mc-val" id="m-proj">0</div>
+          <div class="mc-sub">with full READMEs</div>
+          <div class="mc-bar"><div class="mc-bar-fill" id="mb-proj" style="background:var(--green);width:0%"></div></div>
+        </div>
+        <div class="metric-cell">
+          <div class="mc-label">Training Progress</div>
+          <div class="mc-val" id="m-pct">0%</div>
+          <div class="mc-sub" id="m-days">0 / 18 days complete</div>
+          <div class="mc-bar"><div class="mc-bar-fill" id="mb-pct" style="background:var(--violet);width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="skills-section">
+    <div class="section-hdr">
+      <div class="sh-label">Technical Skills</div>
+      <div class="sh-count">12 technologies</div>
+    </div>
+    <div class="skills-grid" id="skills-grid"></div>
+  </div>
+
+  <!-- PROOF OF WORK — heatmap -->
+  <div class="pow-section">
+    <div class="section-hdr">
+      <div class="sh-label">Proof of Work</div>
+      <div class="sh-count" id="pow-count">0 active days</div>
+      <div style="margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--dim)">10-week training block · Jan–Mar 2025</div>
+    </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap" id="heatmap"></div>
+      <div class="hm-legend">
+        <span>Less</span>
+        <div class="hm-swatch" style="background:var(--b1)"></div>
+        <div class="hm-swatch" style="background:rgba(0,229,160,.25)"></div>
+        <div class="hm-swatch" style="background:rgba(0,229,160,.5)"></div>
+        <div class="hm-swatch" style="background:var(--green)"></div>
+        <span>More</span>
+        <span style="margin-left:16px">· Click to toggle days</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="projects-section">
+    <div class="section-hdr">
+      <div class="sh-label">Projects</div>
+      <div class="sh-count" id="proj-count">0 complete</div>
+    </div>
+    <div class="projects-grid" id="projects-grid"></div>
+  </div>
+
+  <!-- DISCIPLINE -->
+  <div class="discipline-section">
+    <div class="disc-cell">
+      <div class="disc-title">Days trained</div>
+      <div class="disc-big" id="d-days">0</div>
+      <div class="disc-sub">of 18 sessions complete</div>
+      <div class="mc-bar" style="margin-top:0"><div class="mc-bar-fill" id="d-bar" style="background:var(--green);width:0%"></div></div>
+    </div>
+    <div class="disc-cell">
+      <div class="disc-title">Non-negotiable streak</div>
+      <div class="disc-big" id="d-streak">0</div>
+      <div class="disc-sub">consecutive days hit</div>
+      <div class="streak-blocks" id="streak-blocks"></div>
+    </div>
+    <div class="disc-cell">
+      <div class="disc-title">Daily targets</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px">3 SQL / day</span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--text)" id="tgt-sql">0</span>
+          </div>
+          <div class="mc-bar"><div class="mc-bar-fill" id="tgt-sql-bar" style="background:var(--cyan);width:0%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px">5 apps / day</span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--text)" id="tgt-apps">0</span>
+          </div>
+          <div class="mc-bar"><div class="mc-bar-fill" id="tgt-apps-bar" style="background:var(--amber);width:0%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px">2 recruiter msgs / day</span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--text)" id="tgt-rec">0</span>
+          </div>
+          <div class="mc-bar"><div class="mc-bar-fill" id="tgt-rec-bar" style="background:var(--violet);width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRICULUM -->
+  <div class="curr-section">
+    <div class="section-hdr">
+      <div class="sh-label">10-Week Curriculum</div>
+      <div class="sh-count">structured self-study</div>
+      <div style="margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--dim)">Click any week to toggle — updates all stats above</div>
+    </div>
+    <div class="curr-grid" id="curr-grid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="padding:20px 32px;border-top:1px solid var(--b1);display:flex;align-items:center;gap:16px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--muted)">All metrics are live — derived from training log · last updated <span id="last-updated">—</span></div>
+    <button class="clr-btn" style="margin-left:auto;font-size:9px;padding:5px 12px" onclick="resetAll()">Reset training data</button>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════
+     SQL CONSOLE PAGE
+══════════════════════════════════ -->
+<div class="page" id="page-console">
+  <div class="console-layout">
+
+    <div class="con-sidebar">
+      <div class="sb-hdr">Schema — study_db</div>
+
+      <div id="schema-tables"></div>
+
+      <div class="sb-hdr" style="margin-top:0">Example queries</div>
+      <div class="sb-examples" id="example-list"></div>
+
+      <div class="sb-hdr" style="margin-top:0" id="hist-hdr" style="display:none">History</div>
+      <div id="hist-list"></div>
+    </div>
+
+    <div class="con-main">
+      <div class="ed-bar">
+        <div class="ed-dots">
+          <div class="ed-dot" style="background:#ff4d6d"></div>
+          <div class="ed-dot" style="background:#f5a623"></div>
+          <div class="ed-dot" style="background:#00e5a0"></div>
+        </div>
+        <span class="ed-title">study_db — query editor</span>
+        <div class="ed-live"><div class="ed-live-dot"></div>live data</div>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-left:4px">ctrl+enter to run</span>
+        <button class="clr-btn" onclick="clearEditor()">Clear</button>
+        <button class="run-btn" id="run-btn" onclick="runQuery()">&#9654;&nbsp; Run</button>
+      </div>
+      <div class="ed-inner">
+        <div class="ed-linenum" id="ed-lines">1</div>
+        <div class="ed-hl" id="ed-hl"></div>
+        <textarea class="ed-ta" id="ed-ta" spellcheck="false" autocapitalize="none" placeholder="-- Write SQL here&#10;-- Tables: study_log, applications, sql_problems, projects, non_negotiables"></textarea>
+      </div>
+      <div id="res-area">
+        <div class="res-empty">Write a query and run it — results reflect your live training data</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ────────────────────────────────────
+   CONSTANTS & CONFIG
+──────────────────────────────────── */
+const SK = 'jfp_v1';
+
+const CURRICULUM = [
+  {week:1,color:'#00e5a0',topic:'Python & ETL',desc:'OOP, pandas, file I/O, virtual envs, Parquet. Built a configurable ETL pipeline end-to-end.',days:6,apps:30,sql:18,proj:1,projName:'Superstore ETL Pipeline',projStack:['Python','pandas','Parquet','logging'],projDesc:'Configurable ETL pipeline: extracts from CSV, transforms with pandas (cleaning, feature engineering), loads to Parquet. CLI args, logging module, requirements.txt.'},
+  {week:2,color:'#9d7eff',topic:'Advanced SQL',desc:'Window functions, CTEs, recursive queries, EXPLAIN ANALYZE, index optimisation.',days:4,apps:30,sql:25,proj:1,projName:'SQL Analytics Suite',projStack:['PostgreSQL','Window Functions','CTEs','EXPLAIN'],projDesc:'10-query analytical report on Superstore data. Covers ROW_NUMBER, LAG/LEAD, running totals, optimised with indexes. Full README with query explanations.'},
+  {week:3,color:'#f5a623',topic:'Apache Airflow',desc:'DAG authoring, operators, sensors, task dependencies, scheduling, backfill.',days:5,apps:25,sql:15,proj:1,projName:'Airflow ETL Orchestrator',projStack:['Apache Airflow','Python','PostgreSQL','cron'],projDesc:'Three production-style DAGs: daily ingestion, weekly aggregation, and a sensor-gated transformation pipeline. Containerised with Docker Compose.'},
+  {week:4,color:'#ff4d6d',topic:'PySpark',desc:'RDDs vs DataFrames, transformations, actions, partitioning, processing 1M+ row datasets.',days:5,apps:25,sql:15,proj:1,projName:'Large-Scale Spark Pipeline',projStack:['PySpark','Hadoop','Delta Lake','Python'],projDesc:'Processes 1M+ row e-commerce dataset. Joins, aggregations, window functions in Spark. Partitioned output to Delta Lake format with schema enforcement.'},
+  {week:5,color:'#00d4ff',topic:'dbt + Cloud',desc:'dbt models, tests, documentation, lineage graphs. BigQuery/Snowflake free tier connected.',days:5,apps:25,sql:15,proj:1,projName:'dbt Cloud Warehouse Project',projStack:['dbt','BigQuery','SQL','YAML'],projDesc:'Full dbt project: staging, intermediate, and mart layers. Automated tests on every model. Lineage graph documented. Connected to BigQuery free tier.'},
+  {week:6,color:'#00e5a0',topic:'End-to-End Project 1',desc:'Full production pipeline: API ingest → Airflow DAG → Spark transform → dbt model → dashboard.',days:5,apps:25,sql:15,proj:1,projName:'Production Data Platform',projStack:['Airflow','Spark','dbt','BigQuery','Metabase'],projDesc:'End-to-end platform ingesting from a public API, orchestrated by Airflow, transformed by Spark, modelled in dbt, visualised in Metabase. Deployed on GCP.'},
+  {week:7,color:'#9d7eff',topic:'Streaming Pipeline',desc:'Real-time data with Kafka. Consumer → processor → sink architecture.',days:5,apps:25,sql:15,proj:1,projName:'Real-Time Kafka Pipeline',projStack:['Apache Kafka','Python','PostgreSQL','Docker'],projDesc:'Real-time event streaming pipeline. Kafka producer simulates clickstream data, consumer processes with Python, sinks to PostgreSQL. Containerised, documented.'},
+  {week:8,color:'#f5a623',topic:'Interview Prep',desc:'System design, SQL hard problems daily, behavioural questions, mock interviews.',days:5,apps:25,sql:25,proj:0},
+  {week:9,color:'#ff4d6d',topic:'Active Interviewing',desc:'3+ interviews booked. Studying and interviewing in parallel. Feedback loops on each round.',days:5,apps:25,sql:15,proj:0},
+  {week:10,color:'#00d4ff',topic:'Offer & Negotiate',desc:'Evaluate offers. Negotiate. Target: £55–75k+ Data Engineer role in London.',days:5,apps:25,sql:15,proj:0},
+];
+
+const SKILLS = [
+  {cat:'Core',name:'Python',level:85,color:'#00d4ff'},
+  {cat:'Core',name:'SQL',level:90,color:'#00d4ff'},
+  {cat:'Processing',name:'Apache Spark',level:70,color:'#f5a623'},
+  {cat:'Processing',name:'pandas',level:85,color:'#f5a623'},
+  {cat:'Orchestration',name:'Apache Airflow',level:72,color:'#9d7eff'},
+  {cat:'Modelling',name:'dbt',level:68,color:'#9d7eff'},
+  {cat:'Cloud',name:'BigQuery',level:65,color:'#00e5a0'},
+  {cat:'Cloud',name:'GCP',level:60,color:'#00e5a0'},
+  {cat:'Storage',name:'Parquet / Delta',level:75,color:'#f5a623'},
+  {cat:'Storage',name:'PostgreSQL',level:80,color:'#f5a623'},
+  {cat:'Tooling',name:'Git / GitHub',level:80,color:'#00d4ff'},
+  {cat:'Tooling',name:'Docker',level:60,color:'#00d4ff'},
+];
+
+const EXAMPLES = [
+  {label:'Applications by status',q:`SELECT status,\n  COUNT(*) AS count,\n  ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM applications), 1) AS pct\nFROM applications\nGROUP BY status\nORDER BY count DESC`},
+  {label:'Weekly discipline summary',q:`SELECT week,\n  SUM(applications_sent) AS apps,\n  SUM(sql_problems) AS sql_done,\n  COUNT(CASE WHEN completed THEN 1 END) AS days_complete\nFROM study_log\nGROUP BY week\nORDER BY week`},
+  {label:'Running application total',q:`SELECT date,\n  applications_sent AS daily,\n  SUM(applications_sent) OVER (ORDER BY date) AS running_total\nFROM study_log\nWHERE completed = true\nORDER BY date`},
+  {label:'Projects shipped',q:`SELECT week, name, tech_stack, status\nFROM projects\nORDER BY week`},
+  {label:'SQL problems by topic',q:`SELECT topic, difficulty, COUNT(*) AS solved\nFROM sql_problems\nWHERE solved = true\nGROUP BY topic, difficulty\nORDER BY solved DESC`},
+  {label:'Non-negotiable hit rate',q:`SELECT\n  COUNT(*) AS total_days,\n  SUM(CASE WHEN all_hit THEN 1 ELSE 0 END) AS perfect,\n  ROUND(100.0 * SUM(CASE WHEN all_hit THEN 1 ELSE 0 END) / COUNT(*), 1) AS hit_rate\nFROM non_negotiables`},
+  {label:'All study log data',q:`SELECT *\nFROM study_log\nORDER BY date`},
+  {label:'Companies in interview stage',q:`SELECT company, role, date, week\nFROM applications\nWHERE status = 'Interview'\nORDER BY date`},
+];
+
+const SCHEMA = {
+  study_log:{color:'#00e5a0',cols:['date','week','day_name','topic','completed','applications_sent','sql_problems','recruiter_msgs']},
+  applications:{color:'#9d7eff',cols:['id','date','company','role','status','week']},
+  sql_problems:{color:'#f5a623',cols:['id','date','difficulty','topic','solved','week']},
+  projects:{color:'#00d4ff',cols:['id','week','name','tech_stack','status']},
+  non_negotiables:{color:'#ff4d6d',cols:['date','apps_hit','sql_hit','all_hit']},
+};
+
+const COMPANIES = ['Deliveroo','Monzo','Revolut','Wise','Starling Bank','Sky','ASOS','Ocado','GoCardless','Checkout.com','OakNorth','Funding Circle','Cazoo','Palantir','Snowflake','Databricks','dbt Labs','Airbyte','Hinge Health','Babylon Health','Bloomberg','Lloyds','NatWest','Barclays','Spotify'];
+const ROLES = ['Data Engineer','Junior Data Engineer','Analytics Engineer','Senior Data Engineer'];
+const STATUSES = ['Applied','Applied','Applied','Applied','Screening','Screening','Interview','Rejected'];
+const DIFFICULTIES = ['Medium','Medium','Hard'];
+const TOPICS = ['Window Functions','Joins','CTEs','Aggregation','Subqueries','String Functions','Date Functions','Recursive CTEs','EXPLAIN ANALYZE','Indexing'];
+
+/* ────────────────────────────────────
+   STATE
+──────────────────────────────────── */
+let done = new Set();
+let db = {};
+
+function loadState(){
+  try{ const s=JSON.parse(sessionStorage.getItem(SK)||'[]'); done=new Set(s); }catch(e){ done=new Set(); }
+  rebuildDB();
+  renderAll();
+}
+
+function saveState(){
+  try{ sessionStorage.setItem(SK,JSON.stringify([...done])); }catch(e){}
+}
+
+function toggleWeek(i){
+  if(done.has(i)) done.delete(i); else done.add(i);
+  saveState(); rebuildDB(); renderAll();
+}
+
+/* ────────────────────────────────────
+   DB BUILD
+──────────────────────────────────── */
+function rebuildDB(){
+  const study_log=[], applications=[], sql_problems=[], projects=[], non_negotiables=[];
+  let aid=1, sid=1, pid=1;
+  let dayIdx=0;
+
+  CURRICULUM.forEach((wk,wi)=>{
+    const isDone = done.has(wi);
+    for(let d=0;d<wk.days;d++){
+      const date=`2025-${String(wi<4?1:wi<8?2:3).padStart(2,'0')}-${String((wi*5+d+6)%28+1).padStart(2,'0')}`;
+      study_log.push({date,week:wk.week,day_name:['Monday','Tuesday','Wednesday','Thursday','Friday','Weekend'][d]||'Day '+(d+1),topic:wk.topic,completed:isDone,applications_sent:isDone?Math.ceil(wk.apps/wk.days):0,sql_problems:isDone?Math.ceil(wk.sql/wk.days):0,recruiter_msgs:isDone?2:0});
+      if(isDone){
+        const nApps=Math.ceil(wk.apps/wk.days);
+        for(let a=0;a<nApps;a++){
+          applications.push({id:aid++,date,company:COMPANIES[(aid*3+a+wi*7)%COMPANIES.length],role:ROLES[(aid+wi)%ROLES.length],status:STATUSES[(aid*a+wi)%STATUSES.length],week:wk.week});
+        }
+        const nSQL=Math.ceil(wk.sql/wk.days);
+        for(let s=0;s<nSQL;s++){
+          sql_problems.push({id:sid++,date,difficulty:DIFFICULTIES[s%DIFFICULTIES.length],topic:TOPICS[(sid+s+wi)%TOPICS.length],solved:true,week:wk.week});
+        }
+        non_negotiables.push({date,apps_hit:true,sql_hit:true,all_hit:true});
+      }
+      dayIdx++;
+    }
+    if(isDone && wk.proj){
+      projects.push({id:pid++,week:wk.week,name:wk.projName||wk.topic+' Project',tech_stack:(wk.projStack||[]).join(', '),status:'Complete'});
+    }
+  });
+  db={study_log,applications,sql_problems,projects,non_negotiables};
+}
+
+/* ────────────────────────────────────
+   RENDER
+──────────────────────────────────── */
+function renderAll(){
+  renderMetrics();
+  renderSkills();
+  renderHeatmap();
+  renderProjects();
+  renderDiscipline();
+  renderCurriculum();
+  renderSchema();
+  document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+}
+
+function renderMetrics(){
+  const totalSQL = db.sql_problems.length;
+  const totalApps = db.applications.length;
+  const totalProj = db.projects.length;
+  const totalDays = CURRICULUM.reduce((a,w)=>a+w.days,0);
+  const doneDays = [...done].reduce((a,i)=>a+(CURRICULUM[i]?.days||0),0);
+  const pct = totalDays ? Math.round(doneDays/totalDays*100) : 0;
+
+  setText('m-sql', totalSQL);
+  setText('m-apps', totalApps);
+  setText('m-proj', totalProj);
+  setText('m-pct', pct+'%');
+  setText('m-days', doneDays+' / '+totalDays+' days complete');
+  setBar('mb-sql', Math.min(100,totalSQL/2));
+  setBar('mb-apps', Math.min(100,totalApps/3.5));
+  setBar('mb-proj', Math.min(100,totalProj/7*100));
+  setBar('mb-pct', pct);
+}
+
+function renderSkills(){
+  const el = document.getElementById('skills-grid');
+  el.innerHTML = SKILLS.map(s=>`
+    <div class="skill-cell">
+      <div class="sc-cat">${s.cat}</div>
+      <div class="sc-name">${s.name}</div>
+      <div class="sc-bar"><div class="sc-fill" style="background:${s.color};width:${s.level}%"></div></div>
+      <div class="sc-level" style="color:${s.color}">${s.level >= 80 ? 'Proficient' : s.level >= 65 ? 'Competent' : 'Learning'}</div>
+    </div>`).join('');
+}
+
+function renderHeatmap(){
+  const el = document.getElementById('heatmap');
+  // 10 weeks × 5 days = 50 cells in 10 columns
+  let cells = [];
+  CURRICULUM.forEach((wk,wi)=>{
+    const isDone = done.has(wi);
+    for(let d=0;d<5;d++){
+      const intensity = isDone ? (d<2?'done-4':d<4?'done-3':'done-2') : '';
+      cells.push({wi,intensity});
+    }
+  });
+  // arrange into columns of 5
+  let html='';
+  for(let col=0;col<10;col++){
+    html+='<div class="hm-col">';
+    for(let row=0;row<5;row++){
+      const idx=col*5+row;
+      const c=cells[idx];
+      html+=`<div class="hm-cell ${c?c.intensity:''}" title="Week ${col+1}" onclick="toggleWeek(${col})"></div>`;
+    }
+    html+=`<div style="font-family:var(--mono);font-size:8px;color:var(--muted);text-align:center;margin-top:4px">W${col+1}</div>`;
+    html+='</div>';
+  }
+  el.innerHTML=html;
+  setText('pow-count', done.size+' / 10 weeks active');
+}
+
+function renderProjects(){
+  const el = document.getElementById('projects-grid');
+  const allProj = CURRICULUM.filter((_,i)=>done.has(i)&&CURRICULUM[i].proj);
+  const planned = CURRICULUM.filter((_,i)=>!done.has(i)&&CURRICULUM[i].proj);
+
+  let html = allProj.map(wk=>`
+    <div class="proj-card">
+      <div class="proj-status">
+        <div class="status-dot" style="background:var(--green)"></div>
+        <span style="color:var(--green);font-family:var(--mono);font-size:9px;letter-spacing:2px">COMPLETE · WEEK ${wk.week}</span>
+      </div>
+      <div class="proj-name">${wk.projName}</div>
+      <div class="proj-desc">${wk.projDesc}</div>
+      <div class="proj-stack">${(wk.projStack||[]).map(t=>`<span class="stack-tag">${t}</span>`).join('')}</div>
+      <div class="proj-link">&#8599; View on GitHub</div>
+    </div>`).join('');
+
+  if(allProj.length===0){
+    html=`<div class="proj-card" style="grid-column:1/-1">
+      <div class="proj-status"><div class="status-dot" style="background:var(--muted)"></div><span style="color:var(--muted);font-family:var(--mono);font-size:9px;letter-spacing:2px">NO PROJECTS YET</span></div>
+      <div class="proj-name" style="color:var(--dim)">Mark training weeks complete to unlock projects</div>
+      <div class="proj-desc">Complete Week 1 to see the Superstore ETL Pipeline. Each week with a deliverable adds a real project here.</div>
+    </div>`;
+  }
+
+  setText('proj-count', allProj.length+' complete · '+planned.length+' planned');
+  el.innerHTML=html;
+}
+
+function renderDiscipline(){
+  const doneDays=[...done].reduce((a,i)=>a+(CURRICULUM[i]?.days||0),0);
+  const totalDays=CURRICULUM.reduce((a,w)=>a+w.days,0);
+  const streak=[...done].length;
+  const totalSQL=db.sql_problems.length;
+  const totalApps=db.applications.length;
+  const totalRec=db.study_log.filter(r=>r.completed).length*2;
+
+  setText('d-days',doneDays);
+  setBar('d-bar',totalDays?doneDays/totalDays*100:0);
+  setText('d-streak',streak);
+  setText('tgt-sql',totalSQL+' solved');
+  setText('tgt-apps',totalApps+' sent');
+  setText('tgt-rec',totalRec+' sent');
+  setBar('tgt-sql-bar',Math.min(100,totalSQL/(CURRICULUM.reduce((a,w)=>a+w.sql,0))*100));
+  setBar('tgt-apps-bar',Math.min(100,totalApps/(CURRICULUM.reduce((a,w)=>a+w.apps,0))*100));
+  setBar('tgt-rec-bar',Math.min(100,totalRec/(totalDays*2)*100));
+
+  // streak blocks
+  const blocks=document.getElementById('streak-blocks');
+  blocks.innerHTML=CURRICULUM.map((_,i)=>`<div class="sb ${done.has(i)?'hit':'miss'}" title="Week ${i+1}"></div>`).join('');
+}
+
+function renderCurriculum(){
+  const el=document.getElementById('curr-grid');
+  el.innerHTML=CURRICULUM.map((wk,i)=>{
+    const isDone=done.has(i);
+    return `<div class="curr-cell" style="cursor:pointer;transition:background .15s" onclick="toggleWeek(${i})" onmouseenter="this.style.background='var(--s2)'" onmouseleave="this.style.background=''">
+      <div class="curr-week" style="color:${wk.color}">WEEK ${wk.week}</div>
+      <div class="curr-topic">${wk.topic}</div>
+      <div class="curr-desc">${wk.desc}</div>
+      <div class="curr-bar"><div class="curr-fill" style="background:${wk.color};width:${isDone?100:0}%"></div></div>
+      <div class="curr-status" style="color:${isDone?wk.color:'var(--muted)'}">${isDone?'&#10003; Complete':'&#9711; Not started'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderSchema(){
+  const el=document.getElementById('schema-tables');
+  el.innerHTML=Object.entries(SCHEMA).map(([tbl,{color,cols}])=>`
+    <div class="sb-tbl" style="border-left:2px solid ${color}20">
+      <div class="sb-tbl-hdr" onclick="toggleCols('${tbl}')">
+        <div class="sb-tbl-dot" style="background:${color}"></div>
+        <span class="sb-tbl-name" style="color:${color}">${tbl}</span>
+        <span class="sb-tbl-count">${db[tbl]?.length||0} rows</span>
+      </div>
+      <div class="sb-cols" id="cols-${tbl}">
+        ${cols.map(c=>`<div class="sb-col">${c}</div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('example-list').innerHTML=EXAMPLES.map((e,i)=>`<button class="sb-ex" onclick="loadEx(${i})">${e.label}</button>`).join('');
+}
+
+function toggleCols(tbl){
+  const el=document.getElementById('cols-'+tbl);
+  el.style.display=el.style.display==='none'||!el.style.display?'block':'none';
+}
+
+/* ────────────────────────────────────
+   NAV
+──────────────────────────────────── */
+function nav(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb-tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('page-'+page).classList.add('on');
+  document.querySelectorAll('.tb-tab').forEach(t=>{ if(t.textContent.toLowerCase().includes(page==='overview'?'overview':'sql')) t.classList.add('on'); });
+  if(page==='console'){ renderSchema(); if(!document.getElementById('ed-ta').value) loadEx(0); updateEditor(); }
+}
+
+/* ────────────────────────────────────
+   SQL EDITOR
+──────────────────────────────────── */
+const KWS=new Set(['SELECT','FROM','WHERE','GROUP','BY','ORDER','LIMIT','AS','AND','OR','NOT','IN','HAVING','WITH','JOIN','ON','INNER','LEFT','RIGHT','OUTER','CASE','WHEN','THEN','ELSE','END','OVER','PARTITION','DESC','ASC','TRUE','FALSE','NULL','DISTINCT']);
+const FNS=new Set(['COUNT','SUM','AVG','MAX','MIN','ROUND','ROW_NUMBER','RANK','DENSE_RANK','LAG','LEAD','COALESCE']);
+
+function hl(sql){
+  return sql.split(/(\s+|[(),;]|'[^']*'|--[^\n]*|\n)/g).map(t=>{
+    if(!t)return t;
+    if(t.startsWith('--'))return`<span class="cmt">${esc(t)}</span>`;
+    if(t.startsWith("'"))return`<span class="str">${esc(t)}</span>`;
+    const u=t.toUpperCase().replace(/\($/,'');
+    if(KWS.has(u))return`<span class="kw">${esc(t)}</span>`;
+    if(FNS.has(u))return`<span class="fn">${esc(t)}</span>`;
+    if(!isNaN(t)&&t.trim())return`<span class="num">${esc(t)}</span>`;
+    return esc(t);
+  }).join('');
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function updateEditor(){
+  const ta=document.getElementById('ed-ta');
+  if(!ta)return;
+  const v=ta.value;
+  document.getElementById('ed-hl').innerHTML=hl(v);
+  const lines=v.split('\n').length;
+  document.getElementById('ed-lines').innerHTML=Array.from({length:lines},(_,i)=>i+1).join('<br>');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const ta=document.getElementById('ed-ta');
+  if(!ta)return;
+  ta.addEventListener('input',updateEditor);
+  ta.addEventListener('scroll',()=>{
+    document.getElementById('ed-hl').scrollTop=ta.scrollTop;
+    document.getElementById('ed-lines').scrollTop=ta.scrollTop;
+  });
+  ta.addEventListener('keydown',e=>{
+    if(e.key==='Tab'){e.preventDefault();const s=e.target.selectionStart;ta.value=ta.value.substring(0,s)+'  '+ta.value.substring(e.target.selectionEnd);ta.selectionStart=ta.selectionEnd=s+2;updateEditor();}
+    if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery();}
+  });
+});
+
+function loadEx(i){
+  const ta=document.getElementById('ed-ta');
+  if(ta){ta.value=EXAMPLES[i].q;updateEditor();}
+  document.getElementById('res-area').innerHTML='<div class="res-empty">Press &#9654; Run to execute</div>';
+}
+
+function clearEditor(){
+  const ta=document.getElementById('ed-ta');
+  if(ta){ta.value='';updateEditor();}
+  document.getElementById('res-area').innerHTML='<div class="res-empty">Write a query and run it</div>';
+}
+
+let history=[];
+
+function runQuery(){
+  const ta=document.getElementById('ed-ta');
+  const q=ta?.value.trim();
+  if(!q)return;
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true; btn.textContent='Running…';
+  setTimeout(()=>{
+    try{
+      const res=execSQL(q,db);
+      renderResults(res);
+      history=[{q,ts:new Date().toLocaleTimeString(),n:res.rows.length},...history].slice(0,8);
+      renderHist();
+    }catch(err){
+      document.getElementById('res-area').innerHTML=`<div class="err-panel"><span style="color:var(--red);font-size:9px;letter-spacing:1px">QUERY ERROR</span><br><br>${esc(err.message)}</div>`;
+    }
+    btn.disabled=false; btn.textContent='▶\u00a0 Run';
+  },180);
+}
+
+function renderResults(res){
+  const area=document.getElementById('res-area');
+  if(!res.rows.length){
+    area.innerHTML=`<div class="res-bar"><span class="res-label" style="color:var(--green)">Results</span><span class="res-msg">— 0 rows · mark training weeks complete to populate data</span></div><div class="res-empty">No rows returned. Complete training weeks on the Overview tab to populate the database.</div>`;
+    return;
+  }
+  const cols=Object.keys(res.rows[0]);
+  area.innerHTML=`
+    <div class="res-bar">
+      <span class="res-label" style="color:var(--green)">Results</span>
+      <span class="res-msg">— ${res.rows.length} row${res.rows.length!==1?'s':''} · ${cols.length} col${cols.length!==1?'s':''}</span>
+      <span style="margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--violet)">live · ${new Date().toLocaleTimeString()}</span>
+    </div>
+    <div class="res-table-wrap">
+      <table class="res-table">
+        <thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>
+        <tbody>${res.rows.map(row=>`<tr>${cols.map(c=>{
+          const v=row[c];
+          let col='var(--text)';
+          if(v===true)col='#00e5a0';
+          else if(v===false)col='#ff4d6d';
+          else if(typeof v==='number')col='#f5a623';
+          else if(v===null||v===undefined)col='var(--muted)';
+          else if(v==='Interview')col='#00d4ff';
+          else if(v==='Screening')col='#9d7eff';
+          else if(v==='Rejected')col='#ff4d6d';
+          else if(v==='Complete')col='#00e5a0';
+          const d=v===null||v===undefined?`<span style="color:var(--muted)">null</span>`:v===true?'true':v===false?'false':esc(String(v));
+          return`<td style="color:${col}">${d}</td>`;
+        }).join('')}</tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+function renderHist(){
+  document.getElementById('hist-list').innerHTML=history.map((h,i)=>`
+    <div class="sb-tbl" style="cursor:pointer" onclick="restoreHist(${i})">
+      <div class="sb-tbl-hdr"><span style="font-family:var(--mono);font-size:9px;color:var(--violet)">${h.ts}</span><span class="sb-tbl-count">${h.n} rows</span></div>
+      <div style="padding:0 16px 8px;font-family:var(--mono);font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(h.q.split('\n')[0].substring(0,32))}…</div>
+    </div>`).join('');
+}
+
+function restoreHist(i){
+  const ta=document.getElementById('ed-ta');
+  if(ta){ta.value=history[i].q;updateEditor();}
+}
+
+function resetAll(){
+  if(!confirm('Reset all training data?'))return;
+  done.clear();
+  try{sessionStorage.removeItem(SK);}catch(e){}
+  rebuildDB(); renderAll();
+}
+
+/* ────────────────────────────────────
+   SQL ENGINE
+──────────────────────────────────── */
+function execSQL(query,db){
+  const q=query.trim().replace(/\s+/g,' ');
+  const up=q.toUpperCase();
+  const fm=up.match(/FROM\s+(\w+)/);
+  if(!fm)throw new Error('No FROM clause found.');
+  const tbl=fm[1].toLowerCase();
+  if(!db[tbl])throw new Error(`Table '${tbl}' not found.\nAvailable: ${Object.keys(db).join(', ')}`);
+  let rows=db[tbl].map(r=>({...r}));
+
+  const wm=q.match(/WHERE\s+(.*?)(?:\s+GROUP BY|\s+ORDER BY|\s+LIMIT|$)/is);
+  if(wm)rows=rows.filter(r=>evalW(wm[1].trim(),r));
+
+  const sm=q.match(/SELECT\s+(.*?)\s+FROM/is);
+  const sr=sm?sm[1].trim():'*';
+
+  const gm=q.match(/GROUP BY\s+(.*?)(?:\s+ORDER BY|\s+HAVING|\s+LIMIT|$)/is);
+  if(gm){
+    const gc=gm[1].split(',').map(s=>s.trim().toLowerCase());
+    rows=doGroup(rows,gc,sr);
+  } else {
+    rows=doSel(rows,sr);
+  }
+
+  const om=q.match(/ORDER BY\s+(.*?)(?:\s+LIMIT|$)/is);
+  if(om){
+    rows=[...rows].sort((a,b)=>{
+      for(const p of om[1].split(',')){
+        const ts=p.trim().split(/\s+/);
+        const col=ts[0].toLowerCase();
+        const desc=ts[1]?.toUpperCase()==='DESC';
+        const ak=Object.keys(a).find(k=>k.toLowerCase()===col);
+        const bk=Object.keys(b).find(k=>k.toLowerCase()===col);
+        const av=ak?a[ak]:undefined,bv=bk?b[bk]:undefined;
+        if(av<bv)return desc?1:-1;
+        if(av>bv)return desc?-1:1;
+      }
+      return 0;
+    });
+  }
+
+  const lm=q.match(/LIMIT\s+(\d+)/i);
+  if(lm)rows=rows.slice(0,parseInt(lm[1]));
+  return{rows};
+}
+
+function evalW(c,row){
+  let s=c;
+  const rep=(pat,fn)=>{s=s.replace(pat,fn);};
+  rep(/(\w+)\s*=\s*'([^']*)'/gi,(_,col,val)=>{const k=fk(row,col);return k&&String(row[k]).toLowerCase()===val.toLowerCase()?'true':'false';});
+  rep(/(\w+)\s*=\s*(true|false)/gi,(_,col,val)=>{const k=fk(row,col);return k&&String(row[k])===val?'true':'false';});
+  rep(/(\w+)\s*=\s*(\d+)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])===Number(val)?'true':'false';});
+  rep(/(\w+)\s*>=\s*(\d+)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])>=Number(val)?'true':'false';});
+  rep(/(\w+)\s*<=\s*(\d+)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])<=Number(val)?'true':'false';});
+  try{return new Function('return '+s)();}catch{return true;}
+}
+
+function fk(row,col){return Object.keys(row).find(k=>k.toLowerCase()===col.toLowerCase());}
+
+function parseSel(raw){
+  return raw.split(',').map(s=>{
+    const m=s.trim().match(/^(.*?)\s+AS\s+(\w+)$/i);
+    return m?{expr:m[1].trim(),alias:m[2]}:{expr:s.trim(),alias:null};
+  });
+}
+
+function evalE(expr,row,all){
+  const e=expr.trim();
+  if(/^COUNT\(\*\)$/i.test(e))return all.length;
+  if(/^COUNT\(CASE WHEN/i.test(e)){const m=e.match(/WHEN\s+(.*?)\s+THEN/i);return m?all.filter(r=>evalW(m[1],r)).length:0;}
+  const sm=e.match(/^SUM\((\w+)\)$/i);
+  if(sm)return all.reduce((a,r)=>a+(Number(r[fk(r,sm[1])])||0),0);
+  if(/^SUM\(CASE WHEN/i.test(e)){const m=e.match(/WHEN\s+(.*?)\s+THEN\s+(\S+)\s+ELSE\s+(\S+)/i);if(m)return all.reduce((a,r)=>a+(evalW(m[1],r)?Number(m[2]):Number(m[3])),0);}
+  if(/SUM\(.*\)\s+OVER/i.test(e)){const cm=e.match(/SUM\((\w+)\)/i);if(cm){const idx=all.indexOf(row);const k=fk(row,cm[1]);return all.slice(0,idx+1).reduce((a,r)=>a+(Number(r[k])||0),0);}}
+  const am=e.match(/^AVG\((\w+)\)$/i);
+  if(am){const k=fk(all[0]||{},am[1]);const vs=all.map(r=>Number(r[k])).filter(v=>!isNaN(v));return vs.length?+(vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(1):null;}
+  const rm=e.match(/^ROUND\((.*),\s*(\d+)\)$/i);
+  if(rm)return+Number(evalE(rm[1],row,all)).toFixed(Number(rm[2]));
+  const mxm=e.match(/^MAX\((\w+)\)$/i);if(mxm){const k=fk(all[0]||{},mxm[1]);return Math.max(...all.map(r=>Number(r[k])||0));}
+  const mnm=e.match(/^MIN\((\w+)\)$/i);if(mnm){const k=fk(all[0]||{},mnm[1]);return Math.min(...all.map(r=>Number(r[k])||0));}
+  const k=fk(row,e);if(k)return row[k];
+  if(!isNaN(e))return Number(e);
+  return e;
+}
+
+function doSel(rows,raw){
+  if(raw==='*')return rows;
+  const cols=parseSel(raw);
+  return rows.map(row=>{const out={};cols.forEach(({expr,alias})=>{out[alias||expr.toLowerCase().replace(/[^a-z0-9_]/g,'_')]=evalE(expr,row,rows);});return out;});
+}
+
+function doGroup(rows,gcols,raw){
+  const groups={};
+  rows.forEach(row=>{
+    const key=gcols.map(c=>{const k=fk(row,c);return k?row[k]:null;}).join('|');
+    if(!groups[key])groups[key]={rows:[],sample:row};
+    groups[key].rows.push(row);
+  });
+  const cols=parseSel(raw);
+  return Object.values(groups).map(({rows:gr,sample})=>{
+    const out={};cols.forEach(({expr,alias})=>{out[alias||expr.toLowerCase().replace(/[^a-z0-9_]/g,'_')]=evalE(expr,sample,gr);});return out;
+  });
+}
+
+/* ────────────────────────────────────
+   HELPERS
+──────────────────────────────────── */
+function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function setBar(id,pct){const el=document.getElementById(id);if(el)el.style.width=Math.min(100,Math.max(0,pct))+'%';}
+
+loadState();
+</script>
