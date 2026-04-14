@@ -4,887 +4,817 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jeff Floyd — Data Engineer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#060608;--s1:#09090d;--s2:#0d0d13;
-  --b1:#181824;--b2:#222230;--b3:#2c2c3e;
+  --bg:#060608;--s1:#0a0a0e;--s2:#0f0f15;
+  --b1:#1c1c28;--b2:#252535;
   --cyan:#00d4ff;--green:#00e5a0;--amber:#f5a623;--violet:#9d7eff;--red:#ff4d6d;
-  --text:#e0e0f0;--dim:#606080;--muted:#1e1e2e;
-  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  --text:#e4e4f0;--muted:#2e2e42;
+  --mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px;line-height:1.5}
-.topbar{background:var(--s1);border-bottom:1px solid var(--b1);padding:0 32px;display:flex;align-items:center;gap:20px;height:50px;position:sticky;top:0;z-index:200}
-.tb-logo{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:3px}
-.tb-sep{width:1px;height:16px;background:var(--b1)}
-.tb-name{font-size:13px;font-weight:600}
-.tb-role{font-family:var(--mono);font-size:10px;color:var(--dim)}
-.tb-tabs{display:flex;margin-left:auto}
-.tb-tab{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:0 16px;height:50px;display:flex;align-items:center;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
-.tb-tab:hover{color:var(--text)}.tb-tab.on{color:var(--cyan);border-bottom-color:var(--cyan)}
-.tb-avail{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,229,160,.15);border-radius:20px;padding:4px 12px}
-.tb-avail-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
-.tb-gh-btn{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:5px 12px;border-radius:3px;border:1px solid var(--b2);background:transparent;color:var(--dim);cursor:pointer;transition:all .2s;margin-left:8px}
-.tb-gh-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.tb-gh-status{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px}
+.nav{background:var(--s1);border-bottom:1px solid var(--b1);padding:0 24px;display:flex;align-items:center;gap:12px;height:50px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:3px}
+.nav-sep{width:1px;height:18px;background:var(--b1)}
+.nav-name{font-size:12px;font-weight:600}.nav-sub{font-size:9px;color:#5a5a7a;font-family:var(--mono)}
+.nav-tabs{display:flex;margin-left:auto;gap:0}
+.nav-tab{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:0 12px;height:50px;display:flex;align-items:center;color:#5a5a7a;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
+.nav-tab:hover{color:var(--text)}.nav-tab.on{color:var(--cyan);border-bottom-color:var(--cyan)}
+.log-btn{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:6px 12px;border-radius:4px;border:1px solid rgba(0,229,160,.3);background:rgba(0,229,160,.06);color:var(--green);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.log-btn:hover{background:rgba(0,229,160,.12)}
+.log-btn-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.settings-btn{font-family:var(--mono);font-size:9px;padding:5px 9px;border-radius:4px;border:1px solid var(--b2);background:transparent;color:#5a5a7a;cursor:pointer}
+.settings-btn:hover{color:var(--text)}
+.avail{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,229,160,.2);border-radius:10px;padding:3px 8px}
+.avail-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.gh-status{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;padding:4px 9px;border-radius:10px;border:1px solid}
+.gh-status.connected{color:var(--green);border-color:rgba(0,229,160,.2)}.gh-status.disconnected{color:#5a5a7a;border-color:var(--b2)}
+.gh-dot{width:5px;height:5px;border-radius:50%}
 .page{display:none}.page.on{display:block}
 
-/* MODAL */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center}
-.overlay.on{display:flex}
-.modal{background:var(--s2);border:1px solid var(--b2);border-radius:8px;width:500px;max-width:calc(100vw - 40px)}
-.mhdr{padding:20px 24px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
-.mtitle{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase}
-.mclose{font-family:var(--mono);font-size:14px;color:var(--dim);cursor:pointer;background:none;border:none;transition:color .2s}
-.mclose:hover{color:var(--text)}
-.mbody{padding:24px}
-.msec{margin-bottom:20px}
-.msec:last-child{margin-bottom:0}
-.mlabel{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;display:block}
-.minput{width:100%;background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:10px 14px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color .2s}
-.minput:focus{border-color:var(--cyan)}
-.minput::placeholder{color:#2a2a3a}
-.mhint{font-size:11px;color:var(--dim);margin-top:6px;line-height:1.7}
-.mhint a{color:var(--cyan);text-decoration:none}
-.mactions{display:flex;gap:10px;justify-content:flex-end;padding:16px 24px;border-top:1px solid var(--b1)}
-.btn{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:8px 18px;border-radius:3px;cursor:pointer;transition:all .2s}
-.btn-p{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);color:var(--cyan)}
-.btn-p:hover{background:rgba(0,212,255,.15)}
-.btn-s{background:transparent;border:1px solid var(--b2);color:var(--dim)}
-.btn-s:hover{color:var(--text)}
-.mstatus{font-family:var(--mono);font-size:10px;padding:10px 14px;border-radius:4px;margin-top:12px;display:none;line-height:1.6}
-.mstatus.ok{background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.18);color:var(--green);display:block}
-.mstatus.err{background:rgba(255,77,109,.06);border:1px solid rgba(255,77,109,.18);color:var(--red);display:block}
-.mstatus.loading{background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.12);color:var(--cyan);display:block}
+/* MODALS */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--b2);border-radius:10px;width:100%;max-width:560px;margin-bottom:40px}
+.modal-hdr{padding:20px 24px;border-bottom:1px solid var(--b1);display:flex;align-items:flex-start;justify-content:space-between}
+.modal-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px}
+.modal-sub{font-size:10px;color:#5a5a7a;font-family:var(--mono)}
+.modal-close{font-size:18px;color:#5a5a7a;cursor:pointer;background:none;border:none;line-height:1}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:22px 24px;display:flex;flex-direction:column;gap:16px}
+.field{}
+.fl{font-family:var(--mono);font-size:8px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.fl .req{color:var(--red)}
+.fi,.fs,.fta{width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--b2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--cyan)}
+.fs{cursor:pointer}
+.fta{resize:vertical;min-height:72px;line-height:1.7}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fhint{font-size:9px;color:#3a3a52;margin-top:4px;font-family:var(--mono)}
 
-/* HERO */
+.lce-wrap{display:flex;flex-direction:column;gap:7px}
+.lce{display:grid;grid-template-columns:1fr 80px auto auto;gap:6px;align-items:center}
+.lce-topic{padding:7px 10px;background:var(--bg);border:1px solid var(--b2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:10px;outline:none;width:100%}
+.lce-topic:focus{border-color:var(--cyan)}
+.lce-count{padding:7px 10px;background:var(--bg);border:1px solid var(--b2);border-radius:4px;color:var(--amber);font-family:var(--mono);font-size:11px;outline:none;width:100%}
+.lce-count:focus{border-color:var(--amber)}
+.diff-btn{font-family:var(--mono);font-size:8px;padding:4px 8px;border-radius:3px;cursor:pointer;border:1px solid;transition:all .2s;white-space:nowrap}
+.diff-btn.med{color:var(--amber);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.08)}
+.diff-btn.hard{color:var(--red);border-color:rgba(255,77,109,.3);background:rgba(255,77,109,.08)}
+.rm-btn{width:22px;height:22px;border-radius:3px;border:1px solid var(--b2);background:transparent;color:#5a5a7a;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s}
+.rm-btn:hover{color:var(--red);border-color:rgba(255,77,109,.3)}
+.add-lc{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:6px 10px;border-radius:4px;border:1px solid var(--b2);background:transparent;color:#5a5a7a;cursor:pointer;transition:all .2s;align-self:flex-start}
+.add-lc:hover{color:var(--cyan);border-color:rgba(0,212,255,.3)}
+.modal-actions{padding:16px 24px;border-top:1px solid var(--b1);display:flex;gap:8px;align-items:center}
+.btn-p{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:9px 18px;border-radius:4px;border:1px solid rgba(0,229,160,.3);background:rgba(0,229,160,.08);color:var(--green);cursor:pointer;transition:all .2s}
+.btn-p:hover{background:rgba(0,229,160,.15)}
+.btn-s{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:9px 14px;border-radius:4px;border:1px solid var(--b2);background:transparent;color:#5a5a7a;cursor:pointer}
+.btn-s:hover{color:var(--text)}
+.cs{font-family:var(--mono);font-size:9px;color:var(--cyan);margin-left:auto;display:none}
+.cs.show{display:block}
+
+/* TOAST */
+.toast-wrap{position:fixed;top:58px;right:16px;z-index:300;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{background:var(--s1);border:1px solid var(--b2);border-radius:6px;padding:11px 14px;font-family:var(--mono);font-size:9px;line-height:1.6;min-width:260px;max-width:340px;opacity:0;transform:translateY(-6px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ok{border-color:rgba(0,229,160,.3)}.toast.err{border-color:rgba(255,77,109,.3)}
+.toast-hdr{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.toast-dot{width:5px;height:5px;border-radius:50%}
+.toast-msg{color:#5a5a7a}
+.toast-link{color:var(--cyan);text-decoration:none;font-size:8px;display:block;margin-top:3px}
+
+/* LAYOUT */
 .hero{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b1)}
-.hero-l{padding:52px 44px;border-right:1px solid var(--b1)}
-.hero-eyebrow{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
-.hero-name{font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.03em;color:#fff;line-height:1.05;margin-bottom:6px}
-.hero-role{font-size:1rem;color:var(--dim);margin-bottom:22px}
-.hero-bio{font-size:12px;color:var(--dim);line-height:1.9;max-width:440px;margin-bottom:28px}
-.hero-links{display:flex;gap:8px;flex-wrap:wrap}
-.hlink{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:7px 14px;border-radius:3px;border:1px solid var(--b2);color:var(--dim);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
-.hlink:hover{border-color:var(--cyan);color:var(--cyan)}
-.hlink.primary{border-color:rgba(0,212,255,.3);color:var(--cyan);background:rgba(0,212,255,.04)}
+.hero-l{padding:40px 32px;border-right:1px solid var(--b1);display:flex;flex-direction:column;justify-content:center}
+.eyebrow{font-family:var(--mono);font-size:8px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}
+.hero-name{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:700;letter-spacing:-.03em;color:#fff;line-height:1.05;margin-bottom:5px}
+.hero-role{font-size:.9rem;color:#5a5a7a;margin-bottom:16px}
+.hero-bio{font-size:11px;color:#707090;line-height:1.8;max-width:400px;margin-bottom:20px}
+.hero-links{display:flex;gap:7px;flex-wrap:wrap}
+.hlink{font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:5px 10px;border-radius:3px;border:1px solid var(--b2);color:#5a5a7a;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+.hlink:hover,.hlink.p{border-color:var(--cyan);color:var(--cyan)}
+.hlink.p{background:rgba(0,212,255,.04)}
 .hero-r{display:grid;grid-template-columns:1fr 1fr}
-.metric{padding:28px 24px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1)}
+.metric{padding:22px 18px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1)}
 .metric:nth-child(2n){border-right:none}.metric:nth-child(3),.metric:nth-child(4){border-bottom:none}
-.m-label{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.m-val{font-family:var(--mono);font-size:2.2rem;font-weight:600;color:#fff;line-height:1;margin-bottom:4px}
-.m-sub{font-size:11px;color:var(--dim)}
-.m-bar{height:1px;background:var(--b1);margin-top:14px}
+.m-label{font-family:var(--mono);font-size:7px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}
+.m-val{font-family:var(--mono);font-size:1.9rem;font-weight:600;color:#fff;line-height:1;margin-bottom:4px}
+.m-sub{font-size:9px;color:#5a5a7a}
+.m-bar{height:1px;background:var(--b1);margin-top:10px}
 .m-fill{height:100%;transition:width 1.5s cubic-bezier(.4,0,.2,1)}
 
-/* BUILDING */
-.building{border-bottom:1px solid var(--b1);padding:24px 44px;display:flex;align-items:flex-start;gap:28px;background:linear-gradient(90deg,rgba(0,212,255,.025),transparent 70%)}
-.bb-badge{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--cyan);border:1px solid rgba(0,212,255,.2);border-radius:3px;padding:4px 10px;white-space:nowrap;margin-top:3px;display:flex;align-items:center;gap:6px;flex-shrink:0}
-.bb-pulse{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:blink 1.5s infinite}
-.bb-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:4px}
-.bb-desc{font-size:12px;color:var(--dim);line-height:1.7;margin-bottom:10px}
-.bb-stack{display:flex;gap:6px;flex-wrap:wrap}
-.bb-tag{font-family:var(--mono);font-size:8px;color:var(--amber);border:1px solid rgba(245,166,35,.15);border-radius:3px;padding:2px 8px}
+.building{border-bottom:1px solid var(--b1);padding:20px 32px;display:flex;align-items:flex-start;gap:22px;background:linear-gradient(90deg,rgba(0,212,255,.02) 0%,transparent 50%)}
+.bb-badge{font-family:var(--mono);font-size:7px;letter-spacing:2px;color:var(--cyan);border:1px solid rgba(0,212,255,.2);border-radius:3px;padding:3px 9px;white-space:nowrap;margin-top:3px;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.bb-pulse{width:4px;height:4px;border-radius:50%;background:var(--cyan);animation:pulse 1.5s infinite}
+.bb-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:3px}
+.bb-desc{font-size:11px;color:#707090;line-height:1.7;margin-bottom:8px;max-width:560px}
+.bb-stack{display:flex;gap:4px;flex-wrap:wrap}
+.bb-tag{font-family:var(--mono);font-size:7px;color:var(--amber);border:1px solid rgba(245,166,35,.15);border-radius:3px;padding:2px 6px}
 .bb-right{margin-left:auto;flex-shrink:0;text-align:right}
-.bb-pct{font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--cyan)}
-.bb-sub{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:1px;margin-top:2px}
-.bb-bar{width:100px;height:1px;background:var(--b1);margin-top:10px;margin-left:auto}
-.bb-bfill{height:100%;background:var(--cyan);transition:width 1.5s ease}
+.bb-big{font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--cyan)}
+.bb-lbl{font-family:var(--mono);font-size:7px;color:#5a5a7a;margin-top:2px}
+.bb-dt{font-family:var(--mono);font-size:7px;color:#3a3a52;margin-top:5px}
+.bb-bar{width:100px;height:1px;background:var(--b1);margin-top:7px;margin-left:auto}
+.bb-fill{height:100%;background:var(--cyan);transition:width 1.5s}
 
-/* SECTION HDR */
-.sec-hdr{padding:16px 32px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:12px}
-.sec-label{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:3px;text-transform:uppercase}
-.sec-tag{font-family:var(--mono);font-size:8px;color:var(--cyan);background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.12);border-radius:3px;padding:2px 8px}
+.sec-hdr{padding:14px 24px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:9px}
+.sec-label{font-family:var(--mono);font-size:8px;color:#5a5a7a;letter-spacing:3px;text-transform:uppercase}
+.sec-tag{font-family:var(--mono);font-size:8px;color:var(--cyan);background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.12);border-radius:3px;padding:2px 6px}
 
-/* ARCH */
-.arch-wrap{padding:28px 44px;overflow-x:auto;border-bottom:1px solid var(--b1)}
+.arch-wrap{padding:24px 32px;overflow-x:auto;border-bottom:1px solid var(--b1)}
 
 /* SKILLS */
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));border-bottom:1px solid var(--b1)}
-.skill-cell{padding:18px 22px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);transition:background .15s}
-.skill-cell:hover{background:var(--s2)}
-.sk-cat{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
-.sk-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px}
-.sk-bar{height:1px;background:var(--b1);position:relative;margin-bottom:4px}
-.sk-fill{height:1px;position:absolute;top:0;left:0;transition:width 1.8s cubic-bezier(.4,0,.2,1)}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));border-bottom:1px solid var(--b1)}
+.sk-cell{padding:14px 18px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);transition:background .15s}
+.sk-cell:hover{background:var(--s2)}
+.sk-cat{font-family:var(--mono);font-size:7px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.sk-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:7px}
+.sk-bar{height:1px;background:var(--b1);position:relative;margin-bottom:5px}
+.sk-fill{height:1px;position:relative;transition:width 1.8s cubic-bezier(.4,0,.2,1)}
 .sk-fill::after{content:'';position:absolute;right:-2px;top:-2px;width:5px;height:5px;border-radius:50%;background:inherit}
-.sk-level{font-family:var(--mono);font-size:8px}
+.sk-hrs{font-family:var(--mono);font-size:8px;display:flex;justify-content:space-between}
+.sk-hrs-v{font-weight:500}.sk-hrs-l{color:#3a3a52}
 
-/* TWO COL */
+/* LC */
+.lc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));border-bottom:1px solid var(--b1)}
+.lc-cell{padding:14px 18px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1)}
+.lct-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:7px}
+.lct-counts{display:flex;gap:6px;margin-bottom:7px}
+.lct-badge{font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:3px}
+.lct-med{background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.2)}
+.lct-hard{background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2)}
+.lct-bar{height:1px;background:var(--b1);overflow:hidden}
+.lct-fill{height:100%;transition:width 1.5s}
+
+/* VEL + CODE */
 .two-col{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b1)}
-.two-col-l{border-right:1px solid var(--b1)}
-.vel-inner{padding:24px 32px}
-.vel-bars{display:flex;align-items:flex-end;gap:8px;height:110px}
-.vel-bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
-.vel-b{width:100%;border-radius:2px 2px 0 0;transition:height 1.5s cubic-bezier(.4,0,.2,1);position:relative;min-height:2px}
-.vel-bval{font-family:var(--mono);font-size:7px;color:var(--text);position:absolute;top:-14px;left:50%;transform:translateX(-50%);white-space:nowrap}
-.vel-wlbl{font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:5px}
-.vel-leg{display:flex;gap:14px;margin-top:14px}
-.vel-leg-i{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:8px;color:var(--dim)}
-.vel-leg-d{width:8px;height:8px;border-radius:2px}
-.code-tabs-row{display:flex;padding:0 32px;border-bottom:1px solid var(--b1)}
-.ctab{font-family:var(--mono);font-size:9px;padding:11px 14px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
-.ctab.on{color:var(--cyan);border-bottom-color:var(--cyan)}
-.cpanel{display:none;position:relative}.cpanel.on{display:block}
-.clang{position:absolute;top:12px;right:16px;font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:1px}
-.cblock{padding:20px 32px;font-family:var(--mono);font-size:11px;line-height:1.9;overflow-x:auto;background:var(--s1);min-height:260px}
-.cblock pre{margin:0}
-.ck{color:#9d7eff;font-weight:500}.cf{color:#f5a623}.cs{color:#00e5a0}.cn{color:#ff4d6d}.cc{color:#1e1e2e}.co{color:var(--text)}
+.vel-wrap{padding:20px 24px;border-right:1px solid var(--b1)}
+.vel-bars{display:flex;align-items:flex-end;gap:5px;height:90px}
+.vel-bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.vel-b{width:100%;border-radius:2px 2px 0 0;transition:height 1.5s cubic-bezier(.4,0,.2,1);min-height:2px;position:relative}
+.vel-v{font-family:var(--mono);font-size:7px;color:var(--text);position:absolute;top:-12px;left:50%;transform:translateX(-50%);white-space:nowrap}
+.vel-lbl{font-family:var(--mono);font-size:7px;color:#5a5a7a}
+.code-side{}
+.code-tabs-row{display:flex;padding:0 18px;border-bottom:1px solid var(--b1)}
+.code-tab{font-family:var(--mono);font-size:8px;padding:10px 10px;color:#5a5a7a;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
+.code-tab.on{color:var(--cyan);border-bottom-color:var(--cyan)}
+.code-pane{display:none;background:var(--s1);padding:18px 20px;font-family:var(--mono);font-size:10px;line-height:1.9;overflow-x:auto;position:relative;max-height:300px;overflow-y:auto}
+.code-pane.on{display:block}
+.clang{position:absolute;top:9px;right:12px;font-family:var(--mono);font-size:7px;color:#3a3a52;letter-spacing:1px}
 
 /* PROJECTS */
-.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));border-bottom:1px solid var(--b1)}
-.proj-card{padding:26px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);transition:background .2s}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));border-bottom:1px solid var(--b1)}
+.proj-card{padding:22px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);transition:background .2s}
 .proj-card:hover{background:var(--s2)}
-.proj-wk{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:5px}
-.proj-dot{width:5px;height:5px;border-radius:50%}
-.proj-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:5px}
-.proj-desc{font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:12px}
-.proj-stack{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.proj-tag{font-family:var(--mono);font-size:8px;color:var(--cyan);border:1px solid rgba(0,212,255,.12);border-radius:3px;padding:2px 6px}
-.proj-link{font-family:var(--mono);font-size:9px;color:var(--dim);cursor:pointer;transition:color .2s;text-decoration:none}
+.proj-wk{font-family:var(--mono);font-size:7px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.proj-dot{width:4px;height:4px;border-radius:50%}
+.proj-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:4px}
+.proj-desc{font-size:10px;color:#707090;line-height:1.7;margin-bottom:10px}
+.proj-stack{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:9px}
+.proj-tag{font-family:var(--mono);font-size:7px;color:var(--cyan);border:1px solid rgba(0,212,255,.12);border-radius:3px;padding:2px 5px}
+.proj-link{font-family:var(--mono);font-size:8px;color:#5a5a7a;cursor:pointer;transition:color .2s;text-decoration:none}
 .proj-link:hover{color:var(--cyan)}
-.proj-empty{padding:48px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--dim)}
+.proj-empty{padding:36px;color:#5a5a7a;font-size:10px;font-family:var(--mono);text-align:center;grid-column:1/-1}
 
 /* HEATMAP */
-.hm-wrap{padding:20px 44px 24px;overflow-x:auto}
-.hm-row{display:flex;gap:4px;align-items:center;margin-bottom:3px}
-.hm-wlbl{font-family:var(--mono);font-size:7px;color:var(--dim);width:22px;text-align:right;flex-shrink:0}
-.hm-cell{width:15px;height:15px;border-radius:2px;background:var(--b1);cursor:pointer;transition:transform .1s}
+.hm-wrap{padding:18px 32px;border-bottom:1px solid var(--b1);overflow-x:auto}
+.hm-row{display:flex;gap:3px;align-items:center;margin-bottom:3px}
+.hm-wl{font-family:var(--mono);font-size:7px;color:#5a5a7a;width:28px;text-align:right;flex-shrink:0;margin-right:2px}
+.hm-cell{width:13px;height:13px;border-radius:2px;transition:transform .1s}
 .hm-cell:hover{transform:scale(1.3)}
-.hm-cell.l1{background:rgba(0,229,160,.2)}.hm-cell.l2{background:rgba(0,229,160,.45)}.hm-cell.l3{background:rgba(0,229,160,.7)}.hm-cell.l4{background:var(--green)}
-.hm-legend{display:flex;align-items:center;gap:4px;margin-top:8px;font-family:var(--mono);font-size:7px;color:var(--dim)}
+.hm-l0{background:var(--b1)}.hm-l1{background:rgba(0,229,160,.2)}.hm-l2{background:rgba(0,229,160,.45)}.hm-l3{background:rgba(0,229,160,.7)}.hm-l4{background:var(--green)}
+.hm-leg{display:flex;align-items:center;gap:3px;margin-top:8px;font-family:var(--mono);font-size:7px;color:#5a5a7a}
 .hm-sw{width:11px;height:11px;border-radius:2px}
 
-/* CURRICULUM */
-.curr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
-.curr-cell{padding:20px 22px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);cursor:pointer;transition:background .15s;position:relative}
-.curr-cell:hover{background:var(--s2)}.curr-cell.done{background:rgba(0,229,160,.02)}
-.curr-wk{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
-.curr-topic{font-size:13px;font-weight:600;color:#fff;margin-bottom:3px}
-.curr-desc{font-size:11px;color:var(--dim);line-height:1.6;margin-bottom:8px}
-.curr-bar{height:1px;background:var(--b1);overflow:hidden;margin-bottom:4px}
-.curr-fill{height:100%;transition:width 1s ease}
-.curr-status{font-family:var(--mono);font-size:8px;letter-spacing:1px}
-.curr-check{position:absolute;top:16px;right:16px;width:16px;height:16px;border-radius:50%;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s;color:transparent}
-.curr-cell.done .curr-check{background:var(--green);border-color:var(--green);color:#000}
+/* LOG HISTORY */
+.log-entry{padding:16px 24px;border-bottom:1px solid var(--b1);display:grid;grid-template-columns:100px 1fr auto;gap:16px;align-items:start;transition:background .15s}
+.log-entry:hover{background:var(--s2)}
+.le-date{font-family:var(--mono);font-size:9px;color:var(--dim)}
+.le-day{font-size:8px;color:#3a3a52;font-family:var(--mono);margin-top:2px}
+.le-stag{font-family:var(--mono);font-size:7px;padding:2px 6px;border-radius:3px;display:inline-block;margin-bottom:5px}
+.le-notes{font-size:11px;color:#707090;line-height:1.6;margin-bottom:6px}
+.le-meta{display:flex;gap:8px;flex-wrap:wrap}
+.le-mi{font-family:var(--mono);font-size:8px;color:#5a5a7a;display:flex;align-items:center;gap:3px}
+.le-mid{width:3px;height:3px;border-radius:50%}
+.le-hrs{font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--cyan);text-align:right}
+.le-hl{font-family:var(--mono);font-size:7px;color:#3a3a52;text-align:right}
+.le-del{background:none;border:none;color:#3a3a52;cursor:pointer;font-size:11px;padding:1px;transition:color .2s;margin-top:2px;display:block}
+.le-del:hover{color:var(--red)}
+.log-empty{padding:40px 24px;text-align:center;font-family:var(--mono);font-size:9px;color:#3a3a52}
 
-/* COMMIT LOG */
-.commit-log{border-top:1px solid var(--b1)}
-.commit-item{padding:12px 32px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:14px;transition:background .15s}
-.commit-item:hover{background:var(--s2)}
-.commit-hash{font-family:var(--mono);font-size:9px;color:var(--violet);flex-shrink:0;width:58px}
-.commit-msg{font-family:var(--mono);font-size:10px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.commit-date{font-family:var(--mono);font-size:8px;color:var(--dim);flex-shrink:0}
-.commit-badge{font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:3px;flex-shrink:0}
-.cb-ok{background:rgba(0,229,160,.07);color:var(--green);border:1px solid rgba(0,229,160,.15)}
-.cb-pending{background:rgba(245,166,35,.07);color:var(--amber);border:1px solid rgba(245,166,35,.15)}
-.cb-err{background:rgba(255,77,109,.07);color:var(--red);border:1px solid rgba(255,77,109,.15)}
-.commit-empty{padding:20px 32px;font-family:var(--mono);font-size:9px;color:var(--dim)}
-
-/* SQL CONSOLE */
-.console-layout{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 50px)}
+/* CONSOLE */
+.console-layout{display:grid;grid-template-columns:195px 1fr;min-height:calc(100vh - 50px)}
 .con-sb{background:var(--s1);border-right:1px solid var(--b1);overflow-y:auto}
-.con-sb-hdr{padding:11px 14px;border-bottom:1px solid var(--b1);font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:3px;text-transform:uppercase}
+.con-sb-hdr{padding:10px 13px;border-bottom:1px solid var(--b1);font-family:var(--mono);font-size:7px;color:#5a5a7a;letter-spacing:3px;text-transform:uppercase}
 .sb-tbl{border-bottom:1px solid var(--b1)}
-.sb-tbl-h{padding:8px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:background .15s}
+.sb-tbl-h{padding:7px 11px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:background .15s}
 .sb-tbl-h:hover{background:var(--s2)}
 .sb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.sb-tbl-name{font-family:var(--mono);font-size:10px}
-.sb-tbl-n{margin-left:auto;font-family:var(--mono);font-size:8px;color:var(--muted)}
-.sb-cols{padding:3px 12px 6px 23px;display:none;background:rgba(0,0,0,.15)}
-.sb-col{font-family:var(--mono);font-size:8px;color:#2a2a3e;padding:2px 0}
-.sb-ex{display:block;width:100%;text-align:left;padding:7px 12px;font-family:var(--mono);font-size:9px;color:var(--dim);cursor:pointer;border:none;background:none;border-bottom:1px solid var(--b1);transition:all .15s}
+.sb-tbl-name{font-family:var(--mono);font-size:9px}
+.sb-n{margin-left:auto;font-family:var(--mono);font-size:7px;color:var(--muted)}
+.sb-cols{padding:3px 11px 7px 22px;display:none;background:rgba(0,0,0,.15)}
+.sb-col{font-family:var(--mono);font-size:7px;color:#3a3a52;padding:2px 0}
+.sb-ex{display:block;width:100%;text-align:left;padding:7px 11px;font-family:var(--mono);font-size:8px;color:#5a5a7a;cursor:pointer;border:none;background:none;border-bottom:1px solid var(--b1);transition:all .15s}
 .sb-ex:hover{background:var(--s2);color:var(--text)}
 .con-main{display:flex;flex-direction:column}
-.ed-bar{background:var(--s1);border-bottom:1px solid var(--b1);padding:9px 14px;display:flex;align-items:center;gap:8px}
+.ed-bar{background:var(--s1);border-bottom:1px solid var(--b1);padding:8px 13px;display:flex;align-items:center;gap:7px}
 .ed-dots{display:flex;gap:4px}
 .ed-dot{width:9px;height:9px;border-radius:50%}
-.ed-title{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px}
-.ed-live{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:8px;color:var(--violet);border:1px solid rgba(157,126,255,.15);border-radius:8px;padding:3px 8px}
-.ed-live-dot{width:4px;height:4px;border-radius:50%;background:var(--violet);animation:blink 1.5s infinite}
-.run-btn{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:6px 14px;border-radius:3px;border:1px solid rgba(0,212,255,.2);background:rgba(0,212,255,.04);color:var(--cyan);cursor:pointer;transition:all .2s}
+.ed-title{font-family:var(--mono);font-size:8px;color:#5a5a7a;letter-spacing:1px}
+.ed-live{display:flex;align-items:center;gap:3px;font-family:var(--mono);font-size:7px;color:var(--violet);border:1px solid rgba(157,126,255,.2);border-radius:8px;padding:2px 6px}
+.ed-live-dot{width:4px;height:4px;border-radius:50%;background:var(--violet);animation:pulse 1.5s infinite}
+.run-btn{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:5px 11px;border-radius:3px;border:1px solid rgba(0,212,255,.25);background:rgba(0,212,255,.05);color:var(--cyan);cursor:pointer;transition:all .2s}
 .run-btn:hover:not(:disabled){background:rgba(0,212,255,.1)}.run-btn:disabled{opacity:.3;cursor:not-allowed}
-.clr-btn{font-family:var(--mono);font-size:9px;padding:5px 10px;border-radius:3px;border:1px solid var(--b1);background:transparent;color:var(--dim);cursor:pointer;transition:all .2s}
+.clr-btn{font-family:var(--mono);font-size:9px;padding:5px 8px;border-radius:3px;border:1px solid var(--b2);background:transparent;color:#5a5a7a;cursor:pointer}
 .clr-btn:hover{color:var(--text)}
 .ed-inner{position:relative}
-.ed-lines{position:absolute;left:0;top:0;bottom:0;width:38px;padding:13px 7px 13px 0;font-family:var(--mono);font-size:11px;line-height:21px;color:#22223a;text-align:right;user-select:none;border-right:1px solid var(--b1);background:rgba(0,0,0,.2);overflow:hidden}
-.ed-hl{position:absolute;top:0;left:38px;right:0;padding:13px;font-family:var(--mono);font-size:11px;line-height:21px;white-space:pre-wrap;word-break:break-all;pointer-events:none;overflow:hidden;color:transparent}
-.ed-ta{position:relative;width:100%;min-height:140px;padding:13px 13px 13px 52px;font-family:var(--mono);font-size:11px;line-height:21px;background:transparent;border:none;color:var(--text);resize:vertical;outline:none;caret-color:var(--cyan)}
-.res-bar{background:var(--s1);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:8px 14px;display:flex;align-items:center;gap:10px}
-.res-lbl{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase}
-.res-msg{font-family:var(--mono);font-size:9px;color:var(--dim)}
-.res-tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
-.res-tbl th{padding:8px 14px;text-align:left;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;background:var(--s1);border-bottom:1px solid var(--b1);font-weight:500;white-space:nowrap;color:var(--dim)}
-.res-tbl td{padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.02);white-space:nowrap}
-.res-tbl tr:hover td{background:rgba(255,255,255,.01)}
-.res-empty{padding:40px;text-align:center;font-family:var(--mono);font-size:9px;color:#2a2a3e}
-.err-panel{padding:14px 18px;font-family:var(--mono);font-size:10px;color:#ff8099;line-height:1.8;border-left:2px solid var(--red);background:#0c0408}
-.kw{color:#9d7eff;font-weight:500}.cf{color:#f5a623}.str{color:#00e5a0}.num{color:#ff4d6d}.cmt{color:#1a1a2a}
-.footer{padding:14px 32px;border-top:1px solid var(--b1);display:flex;align-items:center;gap:14px}
-.footer-note{font-family:var(--mono);font-size:8px;color:#2a2a3e}
-.reset-btn{font-family:var(--mono);font-size:8px;padding:4px 10px;border-radius:3px;border:1px solid rgba(255,77,109,.1);background:transparent;color:#4a2a32;cursor:pointer;transition:all .2s;margin-left:auto}
-.reset-btn:hover{color:var(--red);border-color:rgba(255,77,109,.3)}
+.ed-lines{position:absolute;left:0;top:0;bottom:0;width:36px;padding:12px 7px 12px 0;font-family:var(--mono);font-size:10px;line-height:22px;color:#2a2a3e;text-align:right;user-select:none;border-right:1px solid var(--b1);background:rgba(0,0,0,.2);overflow:hidden}
+.ed-hl{position:absolute;top:0;left:36px;right:0;padding:12px;font-family:var(--mono);font-size:10px;line-height:22px;white-space:pre-wrap;word-break:break-all;pointer-events:none;overflow:hidden;color:transparent}
+.ed-ta{position:relative;width:100%;min-height:130px;padding:12px 12px 12px 50px;font-family:var(--mono);font-size:10px;line-height:22px;background:transparent;border:none;color:var(--text);resize:vertical;outline:none;caret-color:var(--cyan)}
+.res-bar{background:var(--s1);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:7px 13px;display:flex;align-items:center;gap:8px}
+.res-lbl{font-family:var(--mono);font-size:7px;letter-spacing:2px;text-transform:uppercase}
+.res-msg{font-family:var(--mono);font-size:8px;color:#5a5a7a}
+.res-tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:10px}
+.res-tbl th{padding:7px 12px;text-align:left;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;background:var(--s1);border-bottom:1px solid var(--b1);font-weight:500;white-space:nowrap;color:#5a5a7a}
+.res-tbl td{padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.025);white-space:nowrap}
+.res-tbl tr:hover td{background:rgba(255,255,255,.015)}
+.res-empty{padding:32px;text-align:center;font-family:var(--mono);font-size:9px;color:#3a3a52}
+.err-panel{padding:13px 16px;font-family:var(--mono);font-size:10px;color:#ff8099;line-height:1.8;border-left:2px solid var(--red);background:#0c0408}
+.kw{color:#9d7eff;font-weight:500}.fn{color:#f5a623}.str{color:#00e5a0}.num{color:#ff4d6d}.cmt{color:#222232}
+.footer{padding:12px 24px;border-top:1px solid var(--b1);display:flex;align-items:center;gap:12px}
+.footer-note{font-family:var(--mono);font-size:7px;color:#3a3a52}
+.reset-btn{font-family:var(--mono);font-size:7px;padding:4px 8px;border-radius:3px;border:1px solid rgba(255,77,109,.15);background:transparent;color:#5a3a42;cursor:pointer;margin-left:auto}
+.reset-btn:hover{color:var(--red);border-color:rgba(255,77,109,.4)}
 @media(max-width:800px){
   .hero{grid-template-columns:1fr}.hero-r{border-top:1px solid var(--b1)}
-  .two-col{grid-template-columns:1fr}.two-col-l{border-right:none;border-bottom:1px solid var(--b1)}
-  .building{flex-direction:column}.console-layout{grid-template-columns:1fr}.con-sb{display:none}
+  .two-col{grid-template-columns:1fr}.building{flex-direction:column}
+  .console-layout{grid-template-columns:1fr}.con-sb{display:none}
+  .log-entry{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- GITHUB SETTINGS MODAL -->
-<div class="overlay" id="modal">
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- LOG MODAL -->
+<div class="modal-backdrop" id="log-modal">
   <div class="modal">
-    <div class="mhdr">
-      <div class="mtitle">GitHub Integration</div>
-      <button class="mclose" onclick="closeModal()">✕</button>
+    <div class="modal-hdr">
+      <div><div class="modal-title">Log today's session</div><div class="modal-sub" id="log-modal-date">—</div></div>
+      <button class="modal-close" onclick="closeLog()">✕</button>
     </div>
-    <div class="mbody">
-      <div class="msec">
-        <label class="mlabel">GitHub Username</label>
-        <input class="minput" id="gh-user" type="text" placeholder="e.g. Jfloyd7720" autocomplete="off" spellcheck="false">
+    <div class="modal-body">
+      <div class="fr">
+        <div class="field"><div class="fl">Date <span class="req">*</span></div><input class="fi" id="log-date" type="date"/></div>
+        <div class="field"><div class="fl">Hours studied <span class="req">*</span></div><input class="fi" id="log-hours" type="number" min="0.5" max="16" step="0.5" placeholder="e.g. 4"/></div>
       </div>
-      <div class="msec">
-        <label class="mlabel">Personal Access Token</label>
-        <input class="minput" id="gh-tok" type="password" placeholder="ghp_••••••••••••••••••••••••••••••••••••" autocomplete="off" spellcheck="false">
-        <div class="mhint">
-          Generate at <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> → Generate new token (classic) → tick <strong>repo</strong> scope only. Stored only in your browser, sent only to GitHub's API.
-        </div>
+      <div class="field">
+        <div class="fl">Primary skill <span class="req">*</span></div>
+        <select class="fs" id="log-skill">
+          <option value="">— pick a skill —</option>
+          <option>Python</option><option>SQL</option><option>pandas</option>
+          <option>Apache Airflow</option><option>Apache Spark</option>
+          <option>dbt</option><option>BigQuery</option><option>GCP</option>
+          <option>Parquet / Delta</option><option>PostgreSQL</option>
+          <option>Git / GitHub</option><option>Docker</option><option>Apache Kafka</option>
+        </select>
       </div>
-      <div class="msec">
-        <label class="mlabel">Repo Name</label>
-        <input class="minput" id="gh-repo" type="text" placeholder="de-study-log" autocomplete="off" spellcheck="false">
-        <div class="mhint">Create this at <a href="https://github.com/new" target="_blank">github.com/new</a> — set Public, check "Add a README file".</div>
+      <div class="field">
+        <div class="fl">What you studied <span class="req">*</span> <span style="color:#3a3a52;font-size:7px">— this goes in the GitHub commit message</span></div>
+        <textarea class="fta" id="log-notes" placeholder="e.g. Built configurable ETL pipeline with argparse CLI args. Added logging module throughout. Learned difference between Parquet snappy and gzip compression. Tested end-to-end with Superstore CSV."></textarea>
       </div>
-      <div id="mstatus" class="mstatus"></div>
+      <div class="field">
+        <div class="fl">Week / topic <span style="color:#3a3a52">(optional — unlocks project cards)</span></div>
+        <select class="fs" id="log-week">
+          <option value="">— optional —</option>
+          <option value="1">Week 1 — Python & ETL</option>
+          <option value="2">Week 2 — Advanced SQL</option>
+          <option value="3">Week 3 — Apache Airflow</option>
+          <option value="4">Week 4 — PySpark</option>
+          <option value="5">Week 5 — dbt + Cloud</option>
+          <option value="6">Week 6 — End-to-End Project</option>
+          <option value="7">Week 7 — Streaming Pipeline</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="fl">LeetCode problems <span style="color:#3a3a52">— one row per topic</span></div>
+        <div class="lce-wrap" id="lce-wrap"></div>
+        <button class="add-lc" onclick="addLC()" style="margin-top:7px">+ Add topic</button>
+      </div>
     </div>
-    <div class="mactions">
-      <button class="btn btn-s" onclick="testConn()">Test connection</button>
-      <button class="btn btn-p" onclick="saveGH()">Save &amp; connect</button>
+    <div class="modal-actions">
+      <button class="btn-p" onclick="submitLog()">Save &amp; commit to GitHub</button>
+      <button class="btn-s" onclick="closeLog()">Cancel</button>
+      <div class="cs" id="cs">committing…</div>
     </div>
   </div>
 </div>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="tb-logo">DE//PORTFOLIO</div>
-  <div class="tb-sep"></div>
-  <div><div class="tb-name">Jeff Floyd</div><div class="tb-role">Data Engineer · London</div></div>
-  <div class="tb-tabs">
-    <button class="tb-tab on" onclick="nav('overview')">Overview</button>
-    <button class="tb-tab" onclick="nav('console')">SQL Console</button>
+<!-- SETTINGS MODAL -->
+<div class="modal-backdrop" id="settings-modal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-hdr">
+      <div><div class="modal-title">GitHub Integration</div><div class="modal-sub">Commits go directly from your browser to GitHub</div></div>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><div class="fl">GitHub username</div><input class="fi" id="gh-user" type="text" placeholder="Jfloyd7720" autocomplete="off" spellcheck="false"/></div>
+      <div class="field"><div class="fl">Personal access token</div><input class="fi" id="gh-tok" type="password" placeholder="ghp_••••••••••••" autocomplete="off" spellcheck="false"/><div class="fhint">Needs repo scope only · stored in your browser · never sent anywhere except github.com</div></div>
+      <div class="field"><div class="fl">Repo name</div><input class="fi" id="gh-repo" type="text" value="de-study-log" autocomplete="off" spellcheck="false"/></div>
+      <button class="btn-s" onclick="testConn()" style="width:100%">Test connection</button>
+      <div id="test-res" style="font-family:var(--mono);font-size:9px;padding:9px 12px;border-radius:4px;display:none;line-height:1.6"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-p" onclick="saveSettings()">Save &amp; connect</button>
+      <button class="btn-s" onclick="closeSettings()">Cancel</button>
+      <button style="font-family:var(--mono);font-size:9px;padding:9px 14px;border-radius:4px;border:1px solid rgba(255,77,109,.2);background:transparent;color:var(--red);cursor:pointer;margin-left:auto" onclick="clearSettings()">Disconnect</button>
+    </div>
   </div>
-  <div class="tb-sep"></div>
-  <div class="tb-gh-status" id="gh-indicator">
-    <div style="width:5px;height:5px;border-radius:50%;background:#2a2a3e"></div>
-    <span style="font-family:var(--mono);font-size:9px;color:#3a3a52">GitHub not connected</span>
-  </div>
-  <button class="tb-gh-btn" onclick="openModal()">⚙ GitHub</button>
-  <div class="tb-avail"><div class="tb-avail-dot"></div>Available for hire</div>
 </div>
 
-<!-- OVERVIEW PAGE -->
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-logo">DE//PORTFOLIO</div>
+  <div class="nav-sep"></div>
+  <div><div class="nav-name">Jeff Floyd</div><div class="nav-sub">Data Engineer · London</div></div>
+  <div class="nav-tabs">
+    <button class="nav-tab on" onclick="nav('overview')">Overview</button>
+    <button class="nav-tab" onclick="nav('console')">SQL Console</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="gh-status disconnected" id="gh-badge">
+    <div class="gh-dot" id="gh-dot" style="background:#3a3a52"></div>
+    <span id="gh-txt">GitHub — not connected</span>
+  </div>
+  <button class="log-btn" onclick="openLog()"><div class="log-btn-dot"></div>Log today</button>
+  <button class="settings-btn" onclick="openSettings()">⚙ Settings</button>
+  <div class="avail"><div class="avail-dot"></div>Available</div>
+</div>
+
+<!-- OVERVIEW -->
 <div class="page on" id="page-overview">
 
 <div class="hero">
   <div class="hero-l">
-    <div class="hero-eyebrow">Data Engineer · London · Available</div>
+    <div class="eyebrow">Data Engineer · London · Available</div>
     <div class="hero-name">Jeff Floyd</div>
     <div class="hero-role">Building production-grade data pipelines</div>
-    <div class="hero-bio">I build end-to-end data infrastructure — raw ingestion through transformation, orchestration, and cloud modelling. Comfortable across the full modern data stack. Everything I build ships to GitHub with documentation.</div>
+    <div class="hero-bio">I build end-to-end data infrastructure — from raw ingestion through transformation, orchestration, and modelling. Comfortable across the full modern data stack. Everything I build ships to GitHub with documentation.</div>
     <div class="hero-links">
-      <a class="hlink primary" id="gh-link" href="https://github.com/Jfloyd7720" target="_blank">↗ github.com/Jfloyd7720</a>
+      <a class="hlink p" id="gh-link" href="https://github.com/Jfloyd7720" target="_blank">↗ github.com/Jfloyd7720</a>
       <a class="hlink" href="#">LinkedIn</a>
       <a class="hlink" href="#">jefff@email.com</a>
     </div>
   </div>
   <div class="hero-r">
-    <div class="metric"><div class="m-label">SQL problems solved</div><div class="m-val" id="m-sql">0</div><div class="m-sub">med &amp; hard · LeetCode</div><div class="m-bar"><div class="m-fill" id="mf-sql" style="background:var(--cyan);width:0%"></div></div></div>
-    <div class="metric"><div class="m-label">Projects shipped</div><div class="m-val" id="m-proj">0</div><div class="m-sub">live on GitHub</div><div class="m-bar"><div class="m-fill" id="mf-proj" style="background:var(--green);width:0%"></div></div></div>
-    <div class="metric"><div class="m-label">Training progress</div><div class="m-val" id="m-pct">0%</div><div class="m-sub" id="m-days">0 / 7 weeks</div><div class="m-bar"><div class="m-fill" id="mf-pct" style="background:var(--violet);width:0%"></div></div></div>
-    <div class="metric"><div class="m-label">GitHub commits</div><div class="m-val" id="m-commits">0</div><div class="m-sub">study log entries</div><div class="m-bar"><div class="m-fill" id="mf-commits" style="background:var(--amber);width:0%"></div></div></div>
+    <div class="metric"><div class="m-label">Total hours studied</div><div class="m-val" id="m-hrs">0</div><div class="m-sub">across all sessions</div><div class="m-bar"><div class="m-fill" id="mf-hrs" style="background:var(--cyan);width:0%"></div></div></div>
+    <div class="metric"><div class="m-label">LeetCode solved</div><div class="m-val" id="m-lc">0</div><div class="m-sub" id="m-lc-sub">0 medium · 0 hard</div><div class="m-bar"><div class="m-fill" id="mf-lc" style="background:var(--amber);width:0%"></div></div></div>
+    <div class="metric"><div class="m-label">Days logged</div><div class="m-val" id="m-days">0</div><div class="m-sub">study sessions</div><div class="m-bar"><div class="m-fill" id="mf-days" style="background:var(--green);width:0%"></div></div></div>
+    <div class="metric"><div class="m-label">Projects shipped</div><div class="m-val" id="m-proj">0</div><div class="m-sub">live on GitHub</div><div class="m-bar"><div class="m-fill" id="mf-proj" style="background:var(--violet);width:0%"></div></div></div>
   </div>
 </div>
 
 <div class="building">
-  <div class="bb-badge"><div class="bb-pulse"></div>Currently building</div>
+  <div class="bb-badge"><div class="bb-pulse"></div>Last logged</div>
   <div style="flex:1">
-    <div class="bb-title" id="cb-title">—</div>
-    <div class="bb-desc" id="cb-desc">Mark a week complete in the curriculum below.</div>
+    <div class="bb-title" id="cb-title">No sessions yet</div>
+    <div class="bb-desc" id="cb-desc">Hit "Log today" above to record your first study session.</div>
     <div class="bb-stack" id="cb-stack"></div>
+    <div class="bb-dt" id="cb-dt"></div>
   </div>
   <div class="bb-right">
-    <div class="bb-pct" id="cb-pct">0%</div>
-    <div class="bb-sub">complete</div>
-    <div class="bb-bar"><div class="bb-bfill" id="cb-bar" style="width:0%"></div></div>
+    <div class="bb-big" id="cb-hrs">0h</div>
+    <div class="bb-lbl">last session</div>
+    <div class="bb-bar"><div class="bb-fill" id="cb-bar" style="width:0%"></div></div>
   </div>
 </div>
 
-<!-- ARCHITECTURE -->
-<div>
+<!-- ARCH -->
+<div style="border-bottom:1px solid var(--b1)">
   <div class="sec-hdr"><div class="sec-label">Tech Stack Architecture</div><div class="sec-tag">data flows left → right</div></div>
   <div class="arch-wrap">
-    <svg width="100%" viewBox="0 0 880 130" style="display:block;min-width:640px;overflow:visible">
-      <defs>
-        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-          <path d="M1 1L9 5L1 9" fill="none" stroke="#181824" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </marker>
-      </defs>
-      <line x1="108" y1="65" x2="148" y2="65" stroke="#181824" stroke-width="1" marker-end="url(#arr)"/>
-      <line x1="258" y1="65" x2="298" y2="65" stroke="#181824" stroke-width="1" marker-end="url(#arr)"/>
-      <line x1="408" y1="65" x2="448" y2="65" stroke="#181824" stroke-width="1" marker-end="url(#arr)"/>
-      <line x1="558" y1="65" x2="598" y2="65" stroke="#181824" stroke-width="1" marker-end="url(#arr)"/>
-      <line x1="708" y1="65" x2="748" y2="65" stroke="#181824" stroke-width="1" marker-end="url(#arr)"/>
-      <circle id="pk1" cx="108" cy="65" r="3" fill="#00d4ff" opacity="0"/>
-      <circle id="pk2" cx="258" cy="65" r="3" fill="#9d7eff" opacity="0"/>
-      <circle id="pk3" cx="408" cy="65" r="3" fill="#f5a623" opacity="0"/>
-      <circle id="pk4" cx="558" cy="65" r="3" fill="#00e5a0" opacity="0"/>
-      <circle id="pk5" cx="708" cy="65" r="3" fill="#00d4ff" opacity="0"/>
-      <rect x="8" y="30" width="100" height="70" rx="3" fill="#09090d" stroke="#181824" stroke-width="1"/><rect x="8" y="30" width="100" height="2" rx="1" fill="#00d4ff"/><text x="58" y="54" text-anchor="middle" fill="#00d4ff" font-family="IBM Plex Mono" font-size="8" font-weight="600" letter-spacing="1">INGEST</text><text x="58" y="68" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">Python · requests</text><text x="58" y="80" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">CSV · JSON · API</text><text x="58" y="92" text-anchor="middle" fill="#1e1e2e" font-family="IBM Plex Mono" font-size="6">→ Parquet / S3</text>
-      <rect x="158" y="30" width="100" height="70" rx="3" fill="#09090d" stroke="#181824" stroke-width="1"/><rect x="158" y="30" width="100" height="2" rx="1" fill="#9d7eff"/><text x="208" y="54" text-anchor="middle" fill="#9d7eff" font-family="IBM Plex Mono" font-size="8" font-weight="600" letter-spacing="1">ORCHESTRATE</text><text x="208" y="68" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">Apache Airflow</text><text x="208" y="80" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">DAGs · sensors</text><text x="208" y="92" text-anchor="middle" fill="#1e1e2e" font-family="IBM Plex Mono" font-size="6">scheduling</text>
-      <rect x="308" y="30" width="100" height="70" rx="3" fill="#09090d" stroke="#181824" stroke-width="1"/><rect x="308" y="30" width="100" height="2" rx="1" fill="#f5a623"/><text x="358" y="54" text-anchor="middle" fill="#f5a623" font-family="IBM Plex Mono" font-size="8" font-weight="600" letter-spacing="1">PROCESS</text><text x="358" y="68" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">PySpark</text><text x="358" y="80" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">pandas · Delta</text><text x="358" y="92" text-anchor="middle" fill="#1e1e2e" font-family="IBM Plex Mono" font-size="6">1M+ rows</text>
-      <rect x="458" y="30" width="100" height="70" rx="3" fill="#09090d" stroke="#181824" stroke-width="1"/><rect x="458" y="30" width="100" height="2" rx="1" fill="#00e5a0"/><text x="508" y="54" text-anchor="middle" fill="#00e5a0" font-family="IBM Plex Mono" font-size="8" font-weight="600" letter-spacing="1">MODEL</text><text x="508" y="68" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">dbt</text><text x="508" y="80" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">staging · marts</text><text x="508" y="92" text-anchor="middle" fill="#1e1e2e" font-family="IBM Plex Mono" font-size="6">tests · lineage</text>
-      <rect x="608" y="30" width="100" height="70" rx="3" fill="#09090d" stroke="#181824" stroke-width="1"/><rect x="608" y="30" width="100" height="2" rx="1" fill="#00d4ff"/><text x="658" y="54" text-anchor="middle" fill="#00d4ff" font-family="IBM Plex Mono" font-size="8" font-weight="600" letter-spacing="1">WAREHOUSE</text><text x="658" y="68" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">BigQuery</text><text x="658" y="80" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">Snowflake</text><text x="658" y="92" text-anchor="middle" fill="#1e1e2e" font-family="IBM Plex Mono" font-size="6">partitioned</text>
-      <rect x="758" y="30" width="114" height="70" rx="3" fill="#09090d" stroke="#181824" stroke-width="1"/><rect x="758" y="30" width="114" height="2" rx="1" fill="#9d7eff"/><text x="815" y="54" text-anchor="middle" fill="#9d7eff" font-family="IBM Plex Mono" font-size="8" font-weight="600" letter-spacing="1">SERVE</text><text x="815" y="68" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">Metabase</text><text x="815" y="80" text-anchor="middle" fill="#2a2a3e" font-family="IBM Plex Mono" font-size="7">dashboards · SQL</text><text x="815" y="92" text-anchor="middle" fill="#1e1e2e" font-family="IBM Plex Mono" font-size="6">REST APIs</text>
+    <svg width="100%" viewBox="0 0 860 160" style="display:block;min-width:640px;overflow:visible">
+      <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#1c1c28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <line x1="108" y1="80" x2="145" y2="80" stroke="#1c1c28" stroke-width="1.2" marker-end="url(#arr)"/>
+      <line x1="255" y1="80" x2="292" y2="80" stroke="#1c1c28" stroke-width="1.2" marker-end="url(#arr)"/>
+      <line x1="402" y1="80" x2="439" y2="80" stroke="#1c1c28" stroke-width="1.2" marker-end="url(#arr)"/>
+      <line x1="549" y1="80" x2="586" y2="80" stroke="#1c1c28" stroke-width="1.2" marker-end="url(#arr)"/>
+      <line x1="696" y1="80" x2="733" y2="80" stroke="#1c1c28" stroke-width="1.2" marker-end="url(#arr)"/>
+      <circle id="p1" cx="108" cy="80" r="3" fill="#00d4ff" opacity="0"/>
+      <circle id="p2" cx="255" cy="80" r="3" fill="#9d7eff" opacity="0"/>
+      <circle id="p3" cx="402" cy="80" r="3" fill="#f5a623" opacity="0"/>
+      <circle id="p4" cx="549" cy="80" r="3" fill="#00e5a0" opacity="0"/>
+      <circle id="p5" cx="696" cy="80" r="3" fill="#00d4ff" opacity="0"/>
+      <g><rect x="8" y="46" width="100" height="68" rx="4" fill="#0a0a0e" stroke="#1c1c28" stroke-width="1"/><rect x="8" y="46" width="100" height="2.5" rx="1.5" fill="#00d4ff"/><text x="58" y="72" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" letter-spacing="1">INGEST</text><text x="58" y="86" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">Python · requests</text><text x="58" y="98" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">CSV · JSON · API</text><text x="58" y="110" text-anchor="middle" fill="#1c1c28" font-family="JetBrains Mono,monospace" font-size="7">→ Parquet / S3</text></g>
+      <g><rect x="155" y="46" width="100" height="68" rx="4" fill="#0a0a0e" stroke="#1c1c28" stroke-width="1"/><rect x="155" y="46" width="100" height="2.5" rx="1.5" fill="#9d7eff"/><text x="205" y="72" text-anchor="middle" fill="#9d7eff" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" letter-spacing="1">ORCHESTRATE</text><text x="205" y="86" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">Apache Airflow</text><text x="205" y="98" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">DAGs · sensors</text><text x="205" y="110" text-anchor="middle" fill="#1c1c28" font-family="JetBrains Mono,monospace" font-size="7">scheduling</text></g>
+      <g><rect x="302" y="46" width="100" height="68" rx="4" fill="#0a0a0e" stroke="#1c1c28" stroke-width="1"/><rect x="302" y="46" width="100" height="2.5" rx="1.5" fill="#f5a623"/><text x="352" y="72" text-anchor="middle" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" letter-spacing="1">PROCESS</text><text x="352" y="86" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">PySpark</text><text x="352" y="98" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">pandas · Delta Lake</text><text x="352" y="110" text-anchor="middle" fill="#1c1c28" font-family="JetBrains Mono,monospace" font-size="7">1M+ rows</text></g>
+      <g><rect x="449" y="46" width="100" height="68" rx="4" fill="#0a0a0e" stroke="#1c1c28" stroke-width="1"/><rect x="449" y="46" width="100" height="2.5" rx="1.5" fill="#00e5a0"/><text x="499" y="72" text-anchor="middle" fill="#00e5a0" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" letter-spacing="1">MODEL</text><text x="499" y="86" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">dbt</text><text x="499" y="98" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">staging · marts</text><text x="499" y="110" text-anchor="middle" fill="#1c1c28" font-family="JetBrains Mono,monospace" font-size="7">tests · lineage</text></g>
+      <g><rect x="596" y="46" width="100" height="68" rx="4" fill="#0a0a0e" stroke="#1c1c28" stroke-width="1"/><rect x="596" y="46" width="100" height="2.5" rx="1.5" fill="#00d4ff"/><text x="646" y="72" text-anchor="middle" fill="#00d4ff" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" letter-spacing="1">WAREHOUSE</text><text x="646" y="86" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">BigQuery</text><text x="646" y="98" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">Snowflake</text><text x="646" y="110" text-anchor="middle" fill="#1c1c28" font-family="JetBrains Mono,monospace" font-size="7">partitioned</text></g>
+      <g><rect x="743" y="46" width="100" height="68" rx="4" fill="#0a0a0e" stroke="#1c1c28" stroke-width="1"/><rect x="743" y="46" width="100" height="2.5" rx="1.5" fill="#9d7eff"/><text x="793" y="72" text-anchor="middle" fill="#9d7eff" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" letter-spacing="1">SERVE</text><text x="793" y="86" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">Metabase</text><text x="793" y="98" text-anchor="middle" fill="#2a2a42" font-family="JetBrains Mono,monospace" font-size="7">dashboards</text><text x="793" y="110" text-anchor="middle" fill="#1c1c28" font-family="JetBrains Mono,monospace" font-size="7">APIs</text></g>
     </svg>
   </div>
 </div>
 
-<!-- SKILLS -->
-<div>
-  <div class="sec-hdr"><div class="sec-label">Technical Skills</div><div class="sec-tag">12 technologies</div></div>
-  <div class="skills-grid" id="skills-grid"></div>
-</div>
+<div><div class="sec-hdr"><div class="sec-label">Skills — hours logged</div><div class="sec-tag" id="sk-tag">0h total</div></div><div class="skills-grid" id="sk-grid"></div></div>
+<div class="lc-section" style="border-bottom:1px solid var(--b1)"><div class="sec-hdr"><div class="sec-label">LeetCode breakdown</div><div class="sec-tag" id="lc-tag">0 problems</div></div><div class="lc-grid" id="lc-grid"></div></div>
 
-<!-- VELOCITY + CODE -->
 <div class="two-col">
-  <div class="two-col-l">
-    <div class="sec-hdr"><div class="sec-label">Learning Velocity</div><div class="sec-tag">SQL problems / week</div></div>
-    <div class="vel-inner">
-      <div class="vel-bars" id="vel-bars"></div>
-      <div class="vel-leg">
-        <div class="vel-leg-i"><div class="vel-leg-d" style="background:var(--cyan)"></div>SQL problems</div>
-        <div class="vel-leg-i"><div class="vel-leg-d" style="background:var(--green)"></div>Project shipped</div>
-      </div>
-    </div>
+  <div class="vel-wrap">
+    <div class="sec-hdr" style="padding:0 0 14px;border:none"><div class="sec-label">Hours per day</div><div class="sec-tag">study velocity</div></div>
+    <div class="vel-bars" id="vel-bars"></div>
+    <div style="font-family:var(--mono);font-size:7px;color:#3a3a52;margin-top:7px">Last 14 days</div>
   </div>
-  <div>
-    <div class="sec-hdr" style="padding-right:16px">
-      <div class="sec-label">Code</div>
-      <div class="code-tabs-row" style="padding:0;border:none;margin-left:auto">
-        <button class="ctab on" onclick="switchCode(0,this)">ETL</button>
-        <button class="ctab" onclick="switchCode(1,this)">Window SQL</button>
-        <button class="ctab" onclick="switchCode(2,this)">Airflow DAG</button>
-      </div>
-    </div>
-    <div id="code-panels"></div>
+  <div class="code-side">
+    <div class="sec-hdr" style="padding:12px 18px"><div class="sec-label">Code samples</div></div>
+    <div class="code-tabs-row" id="ctabs"></div>
+    <div id="cpanes"></div>
   </div>
 </div>
 
-<!-- PROJECTS -->
-<div>
-  <div class="sec-hdr"><div class="sec-label">Projects</div><div class="sec-tag" id="proj-tag">0 shipped</div></div>
-  <div class="proj-grid" id="proj-grid"></div>
-</div>
-
-<!-- HEATMAP -->
-<div>
-  <div class="sec-hdr"><div class="sec-label">Proof of Work</div><div class="sec-tag" id="pow-tag">0 / 7 weeks</div><div style="margin-left:auto;font-family:var(--mono);font-size:8px;color:#2a2a3e">Jan – Mar 2025</div></div>
-  <div class="hm-wrap" id="heatmap"></div>
-</div>
-
-<!-- CURRICULUM -->
-<div>
-  <div class="sec-hdr"><div class="sec-label">7-Week Curriculum</div><div class="sec-tag" id="curr-tag">click to mark complete · auto-commits to GitHub</div></div>
-  <div class="curr-grid" id="curr-grid"></div>
-</div>
-
-<!-- COMMIT LOG -->
-<div class="commit-log">
-  <div class="sec-hdr"><div class="sec-label">GitHub Commit Log</div><div class="sec-tag" id="commit-tag">0 commits</div></div>
-  <div id="commit-list"><div class="commit-empty">No commits yet — connect GitHub via the ⚙ GitHub button above, then mark weeks complete.</div></div>
-</div>
+<div><div class="sec-hdr"><div class="sec-label">Projects</div><div class="sec-tag" id="proj-tag">0 shipped</div></div><div class="proj-grid" id="proj-grid"></div></div>
+<div><div class="sec-hdr"><div class="sec-label">Proof of Work</div><div class="sec-tag" id="pow-tag">0 days</div><div style="margin-left:auto;font-family:var(--mono);font-size:7px;color:#3a3a52">colour = hours studied</div></div><div class="hm-wrap" id="heatmap"></div></div>
+<div style="border-bottom:1px solid var(--b1)"><div class="sec-hdr"><div class="sec-label">Study log</div><div class="sec-tag" id="log-tag">0 entries</div></div><div id="log-entries"></div></div>
 
 <div class="footer">
-  <div class="footer-note">All metrics live · <span id="last-upd">—</span></div>
-  <button class="reset-btn" onclick="resetAll()">Reset data</button>
+  <div class="footer-note">All metrics derived from study log · <span id="last-upd">—</span> · <span id="gh-cc">0 commits</span></div>
+  <button class="reset-btn" onclick="resetAll()">Reset all data</button>
 </div>
 </div>
 
-<!-- SQL CONSOLE PAGE -->
+<!-- SQL CONSOLE -->
 <div class="page" id="page-console">
 <div class="console-layout">
   <div class="con-sb">
     <div class="con-sb-hdr">Schema — study_db</div>
     <div id="schema-tbls"></div>
     <div class="con-sb-hdr">Examples</div>
-    <div id="example-btns"></div>
+    <div id="ex-btns"></div>
     <div class="con-sb-hdr">History</div>
     <div id="hist-list"></div>
   </div>
   <div class="con-main">
     <div class="ed-bar">
       <div class="ed-dots"><div class="ed-dot" style="background:#ff4d6d"></div><div class="ed-dot" style="background:#f5a623"></div><div class="ed-dot" style="background:#00e5a0"></div></div>
-      <span class="ed-title">study_db · query editor</span>
+      <span class="ed-title">study_db · live query editor</span>
       <div class="ed-live"><div class="ed-live-dot"></div>live</div>
-      <span style="font-family:var(--mono);font-size:8px;color:#2a2a3e;margin-left:4px">ctrl+enter</span>
+      <span style="font-family:var(--mono);font-size:7px;color:#3a3a52;margin-left:4px">ctrl+enter</span>
       <button class="clr-btn" onclick="clearEd()">Clear</button>
       <button class="run-btn" id="run-btn" onclick="runQ()">▶ Run</button>
     </div>
     <div class="ed-inner">
       <div class="ed-lines" id="ed-lines">1</div>
       <div class="ed-hl" id="ed-hl"></div>
-      <textarea class="ed-ta" id="ed-ta" spellcheck="false" autocapitalize="none" placeholder="-- Write SQL against your live training data&#10;-- Tables: study_log, sql_problems, projects, commits"></textarea>
+      <textarea class="ed-ta" id="ed-ta" spellcheck="false" autocapitalize="none" placeholder="-- Write SQL against your live study data&#10;-- Tables: study_log, leetcode_log"></textarea>
     </div>
-    <div id="res-area"><div class="res-empty">Run a query to see results</div></div>
+    <div id="res-area"><div class="res-empty">Run a query to see live results</div></div>
   </div>
 </div>
 </div>
 
 <script>
-/* CONFIG */
-const SK='jfpv5',GH_SK='jfp_gh_v2';
+const SK='jfpv7',GH_SK='jfp_gh3';
 
-const WEEKS=[
-  {w:1,color:'#00d4ff',topic:'Python & ETL',desc:'OOP, pandas, file I/O, virtual envs, Parquet, configurable ETL pipeline.',sql:18,proj:true,projName:'Superstore ETL Pipeline',projStack:['Python','pandas','Parquet','logging','argparse'],projDesc:'Configurable ETL pipeline: CSV ingestion, pandas transformation, Parquet output. Full logging, CLI args, requirements.txt.'},
-  {w:2,color:'#9d7eff',topic:'Advanced SQL',desc:'Window functions, CTEs, recursive queries, EXPLAIN ANALYZE, index optimisation.',sql:25,proj:true,projName:'SQL Analytics Suite',projStack:['PostgreSQL','CTEs','Window Functions','EXPLAIN'],projDesc:'10-query analytical report. ROW_NUMBER, LAG/LEAD, running totals. Benchmarked with EXPLAIN ANALYZE before and after indexing.'},
-  {w:3,color:'#f5a623',topic:'Apache Airflow',desc:'DAG authoring, operators, sensors, task dependencies, scheduling, backfill.',sql:15,proj:true,projName:'Airflow ETL Orchestrator',projStack:['Apache Airflow','Python','PostgreSQL','Docker'],projDesc:'Three production DAGs: daily ingestion, weekly aggregation, sensor-gated transformation. Containerised with Docker Compose.'},
-  {w:4,color:'#ff4d6d',topic:'PySpark',desc:'RDDs vs DataFrames, transformations vs actions, partitioning, processing at scale.',sql:15,proj:true,projName:'Large-Scale Spark Pipeline',projStack:['PySpark','Delta Lake','Hadoop','Python'],projDesc:'Processes 1M+ row dataset. Spark joins, aggregations, window functions. Partitioned output to Delta Lake.'},
-  {w:5,color:'#00e5a0',topic:'dbt + Cloud',desc:'dbt models, tests, documentation, lineage graphs. BigQuery free tier connected.',sql:15,proj:true,projName:'dbt Cloud Warehouse Project',projStack:['dbt','BigQuery','SQL','YAML'],projDesc:'Full dbt project: staging, intermediate, mart layers. Generic and singular tests. Auto-generated docs.'},
-  {w:6,color:'#00d4ff',topic:'End-to-End Project',desc:'Full production pipeline: API ingest → Airflow → Spark → dbt → dashboard.',sql:15,proj:true,projName:'Production Data Platform',projStack:['Airflow','Spark','dbt','BigQuery','Metabase'],projDesc:'End-to-end platform on GCP. API ingestion, Airflow orchestration, Spark processing, dbt modelling, Metabase dashboards.'},
-  {w:7,color:'#9d7eff',topic:'Streaming Pipeline',desc:'Real-time data with Kafka. Producer → consumer → processor → sink architecture.',sql:15,proj:true,projName:'Real-Time Kafka Pipeline',projStack:['Apache Kafka','Python','PostgreSQL','Docker'],projDesc:'Real-time clickstream event pipeline. Kafka producer, Python consumer, PostgreSQL sink. Fully containerised.'},
-];
+const SKILL_COLORS={'Python':'#00d4ff','SQL':'#9d7eff','pandas':'#00d4ff','Apache Airflow':'#f5a623','Apache Spark':'#ff4d6d','dbt':'#00e5a0','BigQuery':'#00e5a0','GCP':'#00e5a0','Parquet / Delta':'#f5a623','PostgreSQL':'#f5a623','Git / GitHub':'#00d4ff','Docker':'#00d4ff','Apache Kafka':'#9d7eff'};
+const ALL_SKILLS=Object.keys(SKILL_COLORS);
+const SKILL_CAT={'Python':'Core','SQL':'Core','pandas':'Core','Apache Airflow':'Orchestration','Apache Spark':'Processing','dbt':'Modelling','BigQuery':'Cloud','GCP':'Cloud','Parquet / Delta':'Storage','PostgreSQL':'Storage','Git / GitHub':'Tooling','Docker':'Tooling','Apache Kafka':'Streaming'};
 
-const SKILLS=[
-  {cat:'Core',name:'Python',pct:85,color:'#00d4ff'},{cat:'Core',name:'SQL',pct:90,color:'#00d4ff'},
-  {cat:'Processing',name:'Apache Spark',pct:70,color:'#f5a623'},{cat:'Processing',name:'pandas',pct:85,color:'#f5a623'},
-  {cat:'Orchestration',name:'Apache Airflow',pct:72,color:'#9d7eff'},{cat:'Modelling',name:'dbt',pct:68,color:'#9d7eff'},
-  {cat:'Cloud',name:'BigQuery',pct:65,color:'#00e5a0'},{cat:'Cloud',name:'GCP',pct:60,color:'#00e5a0'},
-  {cat:'Storage',name:'Parquet / Delta',pct:75,color:'#f5a623'},{cat:'Storage',name:'PostgreSQL',pct:80,color:'#f5a623'},
-  {cat:'Tooling',name:'Git / GitHub',pct:82,color:'#00d4ff'},{cat:'Tooling',name:'Docker',pct:62,color:'#00d4ff'},
+const PROJECTS=[
+  {week:1,color:'#00d4ff',projName:'Superstore ETL Pipeline',projStack:['Python','pandas','Parquet','logging'],projDesc:'Configurable ETL: CSV → pandas transform → Parquet output. Logging, argparse CLI, README.'},
+  {week:2,color:'#9d7eff',projName:'SQL Analytics Suite',projStack:['PostgreSQL','CTEs','Window Functions'],projDesc:'10-query analytical report. ROW_NUMBER, LAG/LEAD, running totals, composite indexes.'},
+  {week:3,color:'#f5a623',projName:'Airflow ETL Orchestrator',projStack:['Apache Airflow','Python','Docker'],projDesc:'Three production DAGs: daily ingestion, weekly aggregation, sensor-gated pipeline.'},
+  {week:4,color:'#ff4d6d',projName:'Large-Scale Spark Pipeline',projStack:['PySpark','Delta Lake','Python'],projDesc:'1M+ row e-commerce dataset. Spark joins, aggregations, Delta Lake output.'},
+  {week:5,color:'#00e5a0',projName:'dbt Cloud Warehouse Project',projStack:['dbt','BigQuery','YAML'],projDesc:'Staging → intermediate → mart layers, automated tests, lineage graph, BigQuery connected.'},
+  {week:6,color:'#00d4ff',projName:'Production Data Platform',projStack:['Airflow','Spark','dbt','BigQuery'],projDesc:'End-to-end on GCP: API ingest → Airflow → Spark → dbt → Metabase.'},
+  {week:7,color:'#9d7eff',projName:'Real-Time Kafka Pipeline',projStack:['Apache Kafka','Python','PostgreSQL'],projDesc:'Clickstream pipeline. Kafka producer, Python consumer, PostgreSQL sink. Containerised.'},
 ];
 
 const CODE=[
-  {lang:'Python',tokens:[
-    {t:'cc',v:'# superstore_etl.py'},{t:'br'},
-    {t:'kw',v:'import'},{t:'co',v:' logging, argparse'},{t:'br'},
-    {t:'kw',v:'import'},{t:'co',v:' pandas '},{t:'kw',v:'as'},{t:'co',v:' pd'},{t:'br'},{t:'br'},
-    {t:'co',v:"log = logging.getLogger('etl')"},{t:'br'},{t:'br'},
-    {t:'kw',v:'def'},{t:'co',v:' '},{t:'cf',v:'extract'},{t:'co',v:'(path: str) -> pd.DataFrame:'},{t:'br'},
-    {t:'co',v:"    log.info(f'Extracting {path}')"},{t:'br'},
-    {t:'co',v:"    return pd.read_csv(path, parse_dates=['Order Date'])"},{t:'br'},{t:'br'},
-    {t:'kw',v:'def'},{t:'co',v:' '},{t:'cf',v:'transform'},{t:'co',v:'(df: pd.DataFrame) -> pd.DataFrame:'},{t:'br'},
-    {t:'co',v:"    df = df.dropna(subset=['Sales','Profit'])"},{t:'br'},
-    {t:'co',v:"    df['profit_margin'] = (df['Profit'] / df['Sales'] * 100).round(2)"},{t:'br'},
-    {t:'co',v:"    return df[df['Sales'] > 100]"},{t:'br'},{t:'br'},
-    {t:'kw',v:'def'},{t:'co',v:' '},{t:'cf',v:'load'},{t:'co',v:"(df, out): df.to_parquet(out, compression='snappy')"},{t:'br'},
-  ]},
-  {lang:'SQL',tokens:[
-    {t:'cc',v:'-- Monthly MoM growth with window functions'},{t:'br'},
-    {t:'kw',v:'WITH'},{t:'co',v:' monthly AS ('},{t:'br'},
-    {t:'co',v:'  '},{t:'kw',v:'SELECT'},{t:'co',v:" DATE_TRUNC('month', order_date) AS month,"},{t:'br'},
-    {t:'co',v:'         '},{t:'cf',v:'SUM'},{t:'co',v:'(sales) AS revenue'},{t:'br'},
-    {t:'co',v:'  '},{t:'kw',v:'FROM'},{t:'co',v:' superstore '},{t:'kw',v:'GROUP BY'},{t:'co',v:' 1'},{t:'br'},
-    {t:'co',v:')'},{t:'br'},{t:'br'},
-    {t:'kw',v:'SELECT'},{t:'co',v:' month, revenue,'},{t:'br'},
-    {t:'co',v:'  '},{t:'cf',v:'LAG'},{t:'co',v:'(revenue) '},{t:'kw',v:'OVER'},{t:'co',v:' ('},{t:'kw',v:'ORDER BY'},{t:'co',v:' month) AS prev_month,'},{t:'br'},
-    {t:'co',v:'  '},{t:'cf',v:'ROUND'},{t:'co',v:'('},{t:'br'},
-    {t:'co',v:'    100.0 * (revenue - '},{t:'cf',v:'LAG'},{t:'co',v:'(revenue) '},{t:'kw',v:'OVER'},{t:'co',v:' ('},{t:'kw',v:'ORDER BY'},{t:'co',v:' month))'},{t:'br'},
-    {t:'co',v:'    / '},{t:'cf',v:'NULLIF'},{t:'co',v:'('},{t:'cf',v:'LAG'},{t:'co',v:'(revenue) '},{t:'kw',v:'OVER'},{t:'co',v:' ('},{t:'kw',v:'ORDER BY'},{t:'co',v:' month), 0), 2'},{t:'br'},
-    {t:'co',v:'  ) AS mom_growth_pct,'},{t:'br'},
-    {t:'co',v:'  '},{t:'cf',v:'SUM'},{t:'co',v:'(revenue) '},{t:'kw',v:'OVER'},{t:'co',v:' ('},{t:'kw',v:'ORDER BY'},{t:'co',v:' month) AS running_total'},{t:'br'},
-    {t:'kw',v:'FROM'},{t:'co',v:' monthly '},{t:'kw',v:'ORDER BY'},{t:'co',v:' month;'},{t:'br'},
-  ]},
-  {lang:'Python',tokens:[
-    {t:'cc',v:'# daily_etl_dag.py'},{t:'br'},
-    {t:'kw',v:'from'},{t:'co',v:' datetime '},{t:'kw',v:'import'},{t:'co',v:' datetime'},{t:'br'},
-    {t:'kw',v:'from'},{t:'co',v:' airflow '},{t:'kw',v:'import'},{t:'co',v:' DAG'},{t:'br'},
-    {t:'kw',v:'from'},{t:'co',v:' airflow.operators.python '},{t:'kw',v:'import'},{t:'co',v:' PythonOperator'},{t:'br'},
-    {t:'kw',v:'from'},{t:'co',v:' airflow.sensors.filesystem '},{t:'kw',v:'import'},{t:'co',v:' FileSensor'},{t:'br'},{t:'br'},
-    {t:'co',v:"default_args = {'owner': 'jeff', 'retries': 3}"},{t:'br'},{t:'br'},
-    {t:'kw',v:'with'},{t:'co',v:' DAG('},{t:'br'},
-    {t:'co',v:"    dag_id='daily_superstore_etl',"},{t:'br'},
-    {t:'co',v:"    schedule_interval='@daily',"},{t:'br'},
-    {t:'co',v:'    start_date=datetime(2025, 1, 1),'},{t:'br'},
-    {t:'co',v:'    default_args=default_args, catchup='},{t:'kw',v:'False'},{t:'br'},
-    {t:'co',v:') '},{t:'kw',v:'as'},{t:'co',v:' dag:'},{t:'br'},
-    {t:'co',v:"    wait  = FileSensor(task_id='wait', filepath=src)"},{t:'br'},
-    {t:'co',v:"    etl   = PythonOperator(task_id='etl', python_callable=run_etl)"},{t:'br'},
-    {t:'co',v:"    tests = PythonOperator(task_id='tests', python_callable=run_dbt)"},{t:'br'},
-    {t:'co',v:'    wait >> etl >> tests'},{t:'br'},
-  ]},
+  {lang:'Python',label:'ETL pipeline',lines:['<span style="color:#252535"># superstore_etl.py</span>','<span style="color:#9d7eff;font-weight:500">import</span> logging, argparse','<span style="color:#9d7eff;font-weight:500">import</span> pandas <span style="color:#9d7eff;font-weight:500">as</span> pd','','logging.basicConfig(level=logging.INFO)','log = logging.getLogger(<span style="color:#00e5a0">\'etl\'</span>)','','<span style="color:#9d7eff;font-weight:500">def</span> <span style="color:#f5a623">extract</span>(path):','    <span style="color:#9d7eff;font-weight:500">return</span> pd.read_csv(path, parse_dates=[<span style="color:#00e5a0">\'Order Date\'</span>])','','<span style="color:#9d7eff;font-weight:500">def</span> <span style="color:#f5a623">transform</span>(df):','    df = df.dropna(subset=[<span style="color:#00e5a0">\'Sales\'</span>,<span style="color:#00e5a0">\'Profit\'</span>])','    df[<span style="color:#00e5a0">\'margin\'</span>] = (df[<span style="color:#00e5a0">\'Profit\'</span>]/df[<span style="color:#00e5a0">\'Sales\'</span>]*100).round(2)','    <span style="color:#9d7eff;font-weight:500">return</span> df[df[<span style="color:#00e5a0">\'Sales\'</span>] > 100]','','<span style="color:#9d7eff;font-weight:500">def</span> <span style="color:#f5a623">load</span>(df, out):','    df.to_parquet(out,index=<span style="color:#9d7eff;font-weight:500">False</span>,compression=<span style="color:#00e5a0">\'snappy\'</span>)','    log.info(<span style="color:#00e5a0">f\'Loaded → {out}\'</span>)']},
+  {lang:'SQL',label:'Window functions',lines:['<span style="color:#252535">-- MoM growth with running total</span>','<span style="color:#9d7eff;font-weight:500">WITH</span> monthly <span style="color:#9d7eff;font-weight:500">AS</span> (','  <span style="color:#9d7eff;font-weight:500">SELECT</span> DATE_TRUNC(<span style="color:#00e5a0">\'month\'</span>,order_date) month,','         <span style="color:#f5a623">SUM</span>(sales) revenue','  <span style="color:#9d7eff;font-weight:500">FROM</span> superstore <span style="color:#9d7eff;font-weight:500">GROUP BY</span> 1',')','<span style="color:#9d7eff;font-weight:500">SELECT</span> month, revenue,','  <span style="color:#f5a623">LAG</span>(revenue) <span style="color:#9d7eff;font-weight:500">OVER</span>(<span style="color:#9d7eff;font-weight:500">ORDER BY</span> month) prev,','  <span style="color:#f5a623">ROUND</span>(100.0*(revenue-<span style="color:#f5a623">LAG</span>(revenue) <span style="color:#9d7eff;font-weight:500">OVER</span>(<span style="color:#9d7eff;font-weight:500">ORDER BY</span> month))','        /<span style="color:#f5a623">NULLIF</span>(<span style="color:#f5a623">LAG</span>(revenue) <span style="color:#9d7eff;font-weight:500">OVER</span>(<span style="color:#9d7eff;font-weight:500">ORDER BY</span> month),0),2) mom_pct,','  <span style="color:#f5a623">SUM</span>(revenue) <span style="color:#9d7eff;font-weight:500">OVER</span>(<span style="color:#9d7eff;font-weight:500">ORDER BY</span> month) running_total','<span style="color:#9d7eff;font-weight:500">FROM</span> monthly <span style="color:#9d7eff;font-weight:500">ORDER BY</span> month;']},
+  {lang:'Python',label:'Airflow DAG',lines:['<span style="color:#252535"># daily_etl_dag.py</span>','<span style="color:#9d7eff;font-weight:500">from</span> datetime <span style="color:#9d7eff;font-weight:500">import</span> datetime','<span style="color:#9d7eff;font-weight:500">from</span> airflow <span style="color:#9d7eff;font-weight:500">import</span> DAG','<span style="color:#9d7eff;font-weight:500">from</span> airflow.operators.python <span style="color:#9d7eff;font-weight:500">import</span> PythonOperator','<span style="color:#9d7eff;font-weight:500">from</span> airflow.sensors.filesystem <span style="color:#9d7eff;font-weight:500">import</span> FileSensor','','<span style="color:#9d7eff;font-weight:500">with</span> DAG(<span style="color:#00e5a0">\'daily_etl\'</span>,schedule_interval=<span style="color:#00e5a0">\'@daily\'</span>,','         start_date=datetime(2025,1,1),catchup=<span style="color:#9d7eff;font-weight:500">False</span>) <span style="color:#9d7eff;font-weight:500">as</span> dag:','','  wait=FileSensor(task_id=<span style="color:#00e5a0">\'wait\'</span>,filepath=src)','  etl =PythonOperator(task_id=<span style="color:#00e5a0">\'etl\'</span>,python_callable=run)','  test=PythonOperator(task_id=<span style="color:#00e5a0">\'test\'</span>,python_callable=validate)','','  wait >> etl >> test']},
 ];
 
-const EXAMPLES=[
-  {label:'SQL problems by week',q:"SELECT week,\n  COUNT(*) AS problems,\n  SUM(CASE WHEN difficulty='Hard' THEN 1 ELSE 0 END) AS hard_count\nFROM sql_problems\nWHERE solved = true\nGROUP BY week ORDER BY week"},
-  {label:'Projects shipped',q:"SELECT week, name, tech_stack, status\nFROM projects ORDER BY week"},
-  {label:'Full study log',q:"SELECT * FROM study_log ORDER BY week"},
-  {label:'Commit history',q:"SELECT * FROM commits ORDER BY id DESC"},
-  {label:'SQL topics breakdown',q:"SELECT topic, difficulty, COUNT(*) AS count\nFROM sql_problems WHERE solved = true\nGROUP BY topic, difficulty ORDER BY count DESC"},
+const SQL_EXAMPLES=[
+  {label:'Hours per skill',q:`SELECT skill,\n  ROUND(SUM(hours), 1) AS total_hours,\n  COUNT(*) AS sessions\nFROM study_log\nGROUP BY skill\nORDER BY total_hours DESC`},
+  {label:'LeetCode by topic + difficulty',q:`SELECT topic, difficulty,\n  SUM(count) AS problems_solved\nFROM leetcode_log\nGROUP BY topic, difficulty\nORDER BY problems_solved DESC`},
+  {label:'Daily study log',q:`SELECT date, skill, hours, notes\nFROM study_log\nORDER BY date DESC`},
+  {label:'Running hours total',q:`SELECT date, hours,\n  SUM(hours) OVER (ORDER BY date) AS cumulative_hours\nFROM study_log\nORDER BY date`},
+  {label:'Medium vs hard split',q:`SELECT difficulty,\n  SUM(count) AS total_solved\nFROM leetcode_log\nGROUP BY difficulty`},
+  {label:'Most productive days',q:`SELECT date,\n  SUM(hours) AS total_hours,\n  SUM(lc_total) AS leetcodes\nFROM study_log\nGROUP BY date\nORDER BY total_hours DESC\nLIMIT 10`},
 ];
 
 const SCHEMA_DEF={
-  study_log:{color:'#00e5a0',cols:['week','topic','completed','sql_problems']},
-  sql_problems:{color:'#f5a623',cols:['id','week','difficulty','topic','solved']},
-  projects:{color:'#00d4ff',cols:['id','week','name','tech_stack','status']},
-  commits:{color:'#9d7eff',cols:['id','week','message','date','status']},
+  study_log:{color:'#00e5a0',cols:['id','date','skill','hours','notes','week','lc_total']},
+  leetcode_log:{color:'#f5a623',cols:['id','date','skill','topic','count','difficulty']},
 };
 
-/* STATE */
-let done=new Set(), ghCfg={username:'',token:'',repo:'de-study-log'}, commits=[], db={};
+/* ── STATE ── */
+let logs=[];
+let ghCfg={username:'',token:'',repo:'de-study-log'};
+let commitCount=0;
+let activeCode=0;
+let sqlHist=[];
+let lcId=0;
 
 function loadState(){
-  try{const s=JSON.parse(sessionStorage.getItem(SK)||'[]');done=new Set(s);}catch(e){done=new Set();}
+  try{logs=JSON.parse(localStorage.getItem(SK)||'[]');}catch(e){logs=[];}
   try{const g=JSON.parse(localStorage.getItem(GH_SK)||'{}');if(g.username)ghCfg=g;}catch(e){}
-  try{commits=JSON.parse(sessionStorage.getItem(SK+'_c')||'[]');}catch(e){}
-  rebuild();renderAll();updateGHUI();
-  if(ghCfg.username){document.getElementById('gh-user').value=ghCfg.username;document.getElementById('gh-repo').value=ghCfg.repo;}
+  commitCount=parseInt(localStorage.getItem(GH_SK+'_c')||'0');
+  updateGHStatus();renderAll();
+}
+function saveState(){try{localStorage.setItem(SK,JSON.stringify(logs));}catch(e){}}
+
+/* ── DERIVE DB ── */
+function deriveDB(){
+  const study_log=logs.map((l,i)=>({id:i+1,date:l.date,skill:l.skill,hours:l.hours,notes:l.notes,week:l.week||null,lc_total:l.lc.reduce((a,e)=>a+e.count,0)}));
+  const leetcode_log=[];
+  logs.forEach(l=>{l.lc.forEach(e=>{leetcode_log.push({id:leetcode_log.length+1,date:l.date,skill:l.skill,topic:e.topic,count:e.count,difficulty:e.difficulty});});});
+  return{study_log,leetcode_log};
 }
 
-function save(){
-  try{sessionStorage.setItem(SK,JSON.stringify([...done]));}catch(e){}
-  try{sessionStorage.setItem(SK+'_c',JSON.stringify(commits));}catch(e){}
+function skillHours(){const h={};logs.forEach(l=>{h[l.skill]=(h[l.skill]||0)+l.hours;});return h;}
+function lcByTopic(){const t={};logs.forEach(l=>{l.lc.forEach(e=>{if(!t[e.topic])t[e.topic]={medium:0,hard:0};if(e.difficulty==='Hard')t[e.topic].hard+=e.count;else t[e.topic].medium+=e.count;});});return t;}
+
+/* ── LOG MODAL ── */
+function openLog(){
+  document.getElementById('log-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('log-hours').value='';
+  document.getElementById('log-skill').value='';
+  document.getElementById('log-notes').value='';
+  document.getElementById('log-week').value='';
+  document.getElementById('lce-wrap').innerHTML='';
+  document.getElementById('log-modal-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('cs').className='cs';
+  addLC();
+  document.getElementById('log-modal').classList.add('open');
 }
+function closeLog(){document.getElementById('log-modal').classList.remove('open');}
 
-function saveGHCfg(){try{localStorage.setItem(GH_SK,JSON.stringify(ghCfg));}catch(e){}}
-
-/* TOGGLE */
-async function toggleWeek(i){
-  if(done.has(i)){done.delete(i);save();rebuild();renderAll();return;}
-  done.add(i);save();rebuild();renderAll();
-  if(ghCfg.token&&ghCfg.username&&ghCfg.repo) await doCommit(i);
+function addLC(){
+  const id=lcId++;
+  const div=document.createElement('div');div.className='lce';div.id='lce'+id;
+  div.innerHTML=`<input class="lce-topic" placeholder="topic e.g. Window Functions" id="lct${id}"/>
+    <input class="lce-count" type="number" min="1" max="20" placeholder="#" id="lcc${id}"/>
+    <button class="diff-btn med" id="lcd${id}" onclick="togDiff(${id})">Med</button>
+    <button class="rm-btn" onclick="document.getElementById('lce${id}').remove()">×</button>`;
+  document.getElementById('lce-wrap').appendChild(div);
 }
+function togDiff(id){const b=document.getElementById('lcd'+id);const m=b.textContent==='Med';b.textContent=m?'Hard':'Med';b.className='diff-btn '+(m?'hard':'med');}
 
-/* GITHUB COMMIT */
-async function doCommit(i){
-  const wk=WEEKS[i];
-  const msg=`[Week ${wk.w}] Studied ${wk.topic} — ${wk.sql} SQL problems${wk.proj?' · '+wk.projName+' shipped':''}`;
-  const now=new Date();
-  const entry={id:commits.length+1,week:wk.w,message:msg,date:now.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),status:'pending',hash:null};
-  commits.unshift(entry);renderCommitLog();
-
-  const base=`https://api.github.com/repos/${ghCfg.username}/${ghCfg.repo}`;
-  const hdrs={'Authorization':`token ${ghCfg.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};
-
-  const logData={last_updated:now.toISOString(),weeks_complete:[...done].map(j=>({week:WEEKS[j].w,topic:WEEKS[j].topic,sql_problems:WEEKS[j].sql,project:WEEKS[j].proj?WEEKS[j].projName:null})),total_sql:[...done].reduce((a,j)=>a+WEEKS[j].sql,0),total_projects:[...done].filter(j=>WEEKS[j].proj).length};
-
-  const rows=WEEKS.map((w,j)=>{const d=done.has(j);return`| ${w.w} | ${w.topic} | ${d?w.sql:'—'} | ${d&&w.proj?w.projName:'—'} | ${d?'✅ Complete':'⬜ Pending'} |`;}).join('\n');
-  const readme=`# Jeff Floyd — Data Engineering Study Log\n\nActive training block · Jan–Mar 2025\n\n| Week | Topic | SQL Problems | Project | Status |\n|------|-------|-------------|---------|--------|\n${rows}\n\n---\n*Auto-updated via portfolio · ${now.toLocaleDateString('en-GB')}*`;
-
-  try{
-    let jSHA=null,rSHA=null;
-    try{const r=await fetch(`${base}/contents/study-log.json`,{headers:hdrs});if(r.ok){const d=await r.json();jSHA=d.sha;}}catch(e){}
-    try{const r=await fetch(`${base}/contents/README.md`,{headers:hdrs});if(r.ok){const d=await r.json();rSHA=d.sha;}}catch(e){}
-
-    const b64=s=>btoa(unescape(encodeURIComponent(s)));
-
-    const r1=await fetch(`${base}/contents/study-log.json`,{method:'PUT',headers:hdrs,body:JSON.stringify({message:msg,content:b64(JSON.stringify(logData,null,2)),...(jSHA?{sha:jSHA}:{})})});
-    await fetch(`${base}/contents/README.md`,{method:'PUT',headers:hdrs,body:JSON.stringify({message:`docs: update README — Week ${wk.w} complete`,content:b64(readme),...(rSHA?{sha:rSHA}:{})})});
-
-    if(r1.ok){const d=await r1.json();entry.status='ok';entry.hash=d.commit?.sha?.substring(0,7)||'—';}
-    else{const e=await r1.json();entry.status='err';entry.error=e.message;}
-  }catch(e){entry.status='err';entry.error=e.message;}
-
-  save();rebuild();renderAll();
-}
-
-/* MODAL */
-function openModal(){document.getElementById('modal').classList.add('on');}
-function closeModal(){document.getElementById('modal').classList.remove('on');setMS('','');}
-
-function saveGH(){
-  const u=document.getElementById('gh-user').value.trim();
-  const t=document.getElementById('gh-tok').value.trim();
-  const r=document.getElementById('gh-repo').value.trim()||'de-study-log';
-  if(!u||!t){setMS('err','Enter both username and token.');return;}
-  ghCfg={username:u,token:t,repo:r};saveGHCfg();
-  setMS('ok','Saved. GitHub integration active.');updateGHUI();
-  setTimeout(closeModal,1000);
-}
-
-async function testConn(){
-  const u=document.getElementById('gh-user').value.trim();
-  const t=document.getElementById('gh-tok').value.trim();
-  const r=document.getElementById('gh-repo').value.trim()||'de-study-log';
-  if(!u||!t){setMS('err','Enter username and token first.');return;}
-  setMS('loading','Testing connection…');
-  try{
-    const res=await fetch(`https://api.github.com/repos/${u}/${r}`,{headers:{'Authorization':`token ${t}`,'Accept':'application/vnd.github.v3+json'}});
-    if(res.ok){const d=await res.json();setMS('ok',`✓ Connected — "${d.full_name}" · ${d.private?'Private':'Public'}`);}
-    else if(res.status===404)setMS('err',`Repo "${u}/${r}" not found. Create it at github.com/new.`);
-    else if(res.status===401)setMS('err','Token invalid or expired. Generate a new one.');
-    else setMS('err',`GitHub returned ${res.status}.`);
-  }catch(e){setMS('err','Network error.');}
-}
-
-function setMS(type,msg){const el=document.getElementById('mstatus');el.className='mstatus'+(type?' '+type:'');el.textContent=msg;}
-
-function updateGHUI(){
-  const el=document.getElementById('gh-indicator');
-  const link=document.getElementById('gh-link');
-  if(ghCfg.token&&ghCfg.username){
-    el.innerHTML=`<div style="width:5px;height:5px;border-radius:50%;background:var(--green)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--green)">GitHub: ${ghCfg.username}</span>`;
-    if(link)link.href=`https://github.com/${ghCfg.username}`;
-  }else{
-    el.innerHTML=`<div style="width:5px;height:5px;border-radius:50%;background:#2a2a3e"></div><span style="font-family:var(--mono);font-size:9px;color:#3a3a52">GitHub not connected</span>`;
-  }
-}
-
-/* DB */
-const DIFFS=['Medium','Medium','Hard'];
-const TOPICS=['Window Functions','CTEs','Joins','Aggregation','Subqueries','String Functions','Date Functions','Recursive CTEs','EXPLAIN','Indexing'];
-
-function rebuild(){
-  const study_log=[],sql_problems=[],projects=[];let sid=1;
-  WEEKS.forEach((wk,i)=>{
-    const d=done.has(i);
-    study_log.push({week:wk.w,topic:wk.topic,completed:d,sql_problems:d?wk.sql:0});
-    if(d){
-      for(let s=0;s<wk.sql;s++)sql_problems.push({id:sid++,week:wk.w,difficulty:DIFFS[s%3],topic:TOPICS[(sid+s)%TOPICS.length],solved:true});
-      if(wk.proj)projects.push({id:i+1,week:wk.w,name:wk.projName,tech_stack:wk.projStack.join(', '),status:'Complete'});
-    }
+async function submitLog(){
+  const date=document.getElementById('log-date').value;
+  const hours=parseFloat(document.getElementById('log-hours').value);
+  const skill=document.getElementById('log-skill').value;
+  const notes=document.getElementById('log-notes').value.trim();
+  const week=document.getElementById('log-week').value;
+  if(!date||!hours||!skill||!notes){toast('err','Missing fields','Date, hours, skill and notes are required.');return;}
+  const lc=[];
+  document.querySelectorAll('.lce').forEach(row=>{
+    const id=row.id.replace('lce','');
+    const topic=(document.getElementById('lct'+id)?.value||'').trim();
+    const count=parseInt(document.getElementById('lcc'+id)?.value||'0');
+    const diff=document.getElementById('lcd'+id)?.textContent==='Hard'?'Hard':'Medium';
+    if(topic&&count>0)lc.push({topic,count,difficulty:diff});
   });
-  const cms=commits.map((c,i)=>({id:i+1,week:c.week,message:c.message,date:c.date,status:c.status}));
-  db={study_log,sql_problems,projects,commits:cms};
+  const entry={id:Date.now(),date,skill,hours,notes,week:week?parseInt(week):null,lc};
+  logs.unshift(entry);saveState();renderAll();closeLog();
+  const cs=document.getElementById('cs');cs.textContent='committing…';cs.className='cs show';
+  await commitToGH(entry);cs.className='cs';
 }
 
-/* RENDER */
+/* ── GITHUB ── */
+function updateGHStatus(){
+  const ok=!!(ghCfg.username&&ghCfg.token);
+  document.getElementById('gh-dot').style.background=ok?'var(--green)':'#3a3a52';
+  document.getElementById('gh-txt').textContent=ok?`@${ghCfg.username}`:'GitHub — not connected';
+  document.getElementById('gh-badge').className='gh-status '+(ok?'connected':'disconnected');
+  const el=document.getElementById('gh-link');if(el&&ghCfg.username){el.href=`https://github.com/${ghCfg.username}`;el.textContent=`↗ github.com/${ghCfg.username}`;}
+  const cc=document.getElementById('gh-cc');if(cc)cc.textContent=commitCount+' commit'+(commitCount!==1?'s':'');
+}
+
+async function commitToGH(entry){
+  if(!ghCfg.username||!ghCfg.token||!ghCfg.repo)return;
+  const {username,token,repo}=ghCfg;
+  const base=`https://api.github.com/repos/${username}/${repo}`;
+  const hdrs={'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};
+  try{
+    let sha=null;try{const r=await fetch(`${base}/contents/study-log.json`,{headers:hdrs});if(r.ok){const d=await r.json();sha=d.sha;}}catch(e){}
+    const sh=skillHours();
+    const totalHrs=logs.reduce((a,l)=>a+l.hours,0);
+    const totalLC=logs.reduce((a,l)=>a+l.lc.reduce((b,e)=>b+e.count,0),0);
+    const logData={updated:new Date().toISOString(),engineer:'Jeff Floyd',role:'Data Engineer',location:'London',stats:{total_hours:Math.round(totalHrs*10)/10,total_leetcode:totalLC,total_sessions:logs.length,skills_hours:sh},sessions:logs.map(l=>({date:l.date,skill:l.skill,hours:l.hours,notes:l.notes,leetcode:l.lc}))};
+    const lcSummary=entry.lc.length?` · ${entry.lc.reduce((a,e)=>a+e.count,0)} LeetCode (${entry.lc.map(e=>`${e.count} ${e.topic}`).join(', ')})`:'';;
+    const msg=`[${entry.date}] ${entry.skill} — ${entry.hours}h${lcSummary}`;
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(logData,null,2))));
+    const body={message:msg,content};if(sha)body.sha=sha;
+    const r1=await fetch(`${base}/contents/study-log.json`,{method:'PUT',headers:hdrs,body:JSON.stringify(body)});
+    if(!r1.ok){const e=await r1.json();throw new Error(e.message);}
+    const cd=await r1.json();
+    let rsha=null;try{const rr=await fetch(`${base}/contents/README.md`,{headers:hdrs});if(rr.ok){const rd=await rr.json();rsha=rd.sha;}}catch(e){}
+    const skillRows=Object.entries(sh).sort((a,b)=>b[1]-a[1]).map(([s,h])=>`| ${s} | ${h.toFixed(1)}h |`).join('\n');
+    const readme=`# Jeff Floyd — Data Engineering Study Log\n\nData Engineer · London\n\n## Stats\n- **Total hours:** ${totalHrs.toFixed(1)}\n- **LeetCode solved:** ${totalLC}\n- **Sessions:** ${logs.length}\n\n## Hours by Skill\n| Skill | Hours |\n|-------|-------|\n${skillRows}\n\n## Recent Sessions\n${logs.slice(0,5).map(l=>`- **${l.date}** · ${l.skill} · ${l.hours}h · ${l.notes.substring(0,80)}${l.notes.length>80?'…':''}`).join('\n')}\n\n*Updated: ${new Date().toLocaleString('en-GB')}*\n`;
+    const rb={message:`docs: update study log · ${entry.date}`,content:btoa(unescape(encodeURIComponent(readme)))};if(rsha)rb.sha=rsha;
+    await fetch(`${base}/contents/README.md`,{method:'PUT',headers:hdrs,body:JSON.stringify(rb)});
+    commitCount++;localStorage.setItem(GH_SK+'_c',commitCount);updateGHStatus();
+    toast('ok',`Committed — ${entry.date}`,msg,cd.commit?.html_url||`https://github.com/${username}/${repo}/commits`);
+  }catch(err){toast('err','GitHub error',err.message);}
+}
+
+function openSettings(){document.getElementById('gh-user').value=ghCfg.username||'';document.getElementById('gh-tok').value=ghCfg.token||'';document.getElementById('gh-repo').value=ghCfg.repo||'de-study-log';document.getElementById('test-res').style.display='none';document.getElementById('settings-modal').classList.add('open');}
+function closeSettings(){document.getElementById('settings-modal').classList.remove('open');}
+function saveSettings(){ghCfg.username=document.getElementById('gh-user').value.trim();ghCfg.token=document.getElementById('gh-tok').value.trim();ghCfg.repo=document.getElementById('gh-repo').value.trim()||'de-study-log';try{localStorage.setItem(GH_SK,JSON.stringify(ghCfg));}catch(e){}updateGHStatus();closeSettings();toast('ok','Connected',`GitHub connected as @${ghCfg.username}`);}
+function clearSettings(){ghCfg={username:'',token:'',repo:'de-study-log'};try{localStorage.removeItem(GH_SK);}catch(e){}updateGHStatus();closeSettings();}
+async function testConn(){
+  const u=document.getElementById('gh-user').value.trim(),t=document.getElementById('gh-tok').value.trim(),r=document.getElementById('gh-repo').value.trim()||'de-study-log';
+  const el=document.getElementById('test-res');el.style.display='block';el.style.color='#5a5a7a';el.textContent='Testing…';
+  try{const res=await fetch(`https://api.github.com/repos/${u}/${r}`,{headers:{'Authorization':`token ${t}`,'Accept':'application/vnd.github.v3+json'}});if(res.ok){const d=await res.json();el.style.color='var(--green)';el.textContent=`✓ Connected — "${d.full_name}" found`;}else{const e=await res.json();el.style.color='var(--red)';el.textContent=`✗ ${res.status}: ${e.message}`;}}catch(e){el.style.color='var(--red)';el.textContent=`✗ ${e.message}`;}
+}
+
+function toast(type,title,msg,link){
+  const wrap=document.getElementById('toast-wrap');const el=document.createElement('div');el.className=`toast ${type}`;
+  const col=type==='ok'?'var(--green)':'var(--red)';
+  el.innerHTML=`<div class="toast-hdr"><div class="toast-dot" style="background:${col}"></div><div style="font-family:var(--mono);font-size:8px;letter-spacing:1px;color:${col}">${title}</div></div><div class="toast-msg">${msg}</div>${link?`<a class="toast-link" href="${link}" target="_blank">View on GitHub ↗</a>`:''}`;
+  wrap.appendChild(el);setTimeout(()=>el.classList.add('show'),50);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400);},5000);
+}
+
+/* ── RENDER ── */
 function renderAll(){
-  renderMetrics();renderBuilding();renderSkills();renderVelocity();
-  renderCodePanels();renderProjects();renderHeatmap();renderCurriculum();renderCommitLog();renderSchema();
-  set('last-upd',new Date().toLocaleTimeString());
+  renderMetrics();renderBuilding();renderSkills();renderLC();renderVelocity();
+  renderCode();renderProjects();renderHeatmap();renderLogHistory();renderSchema();
+  document.getElementById('last-upd').textContent=new Date().toLocaleTimeString();
 }
 
 function renderMetrics(){
-  const totalSQL=db.sql_problems.length,totalProj=db.projects.length;
-  const pct=Math.round(done.size/WEEKS.length*100);
-  const okCommits=commits.filter(c=>c.status==='ok').length;
-  set('m-sql',totalSQL);set('m-proj',totalProj);set('m-pct',pct+'%');set('m-days',done.size+' / '+WEEKS.length+' weeks');set('m-commits',okCommits);
-  bar('mf-sql',Math.min(100,totalSQL/118*100));bar('mf-proj',Math.min(100,totalProj/7*100));bar('mf-pct',pct);bar('mf-commits',Math.min(100,okCommits/7*100));
+  const totalHrs=logs.reduce((a,l)=>a+l.hours,0);
+  const totalLC=logs.reduce((a,l)=>a+l.lc.reduce((b,e)=>b+e.count,0),0);
+  const medLC=logs.reduce((a,l)=>a+l.lc.filter(e=>e.difficulty==='Medium').reduce((b,e)=>b+e.count,0),0);
+  const hardLC=totalLC-medLC;
+  const uniqueDays=new Set(logs.map(l=>l.date)).size;
+  const loggedWeeks=new Set(logs.filter(l=>l.week).map(l=>l.week));
+  const projShipped=PROJECTS.filter(p=>loggedWeeks.has(p.week)).length;
+  set('m-hrs',totalHrs%1===0?totalHrs:totalHrs.toFixed(1));
+  set('m-lc',totalLC);set('m-lc-sub',`${medLC} medium · ${hardLC} hard`);
+  set('m-days',uniqueDays);set('m-proj',projShipped);
+  bar('mf-hrs',Math.min(100,totalHrs/200*100));bar('mf-lc',Math.min(100,totalLC/200*100));
+  bar('mf-days',Math.min(100,uniqueDays/70*100));bar('mf-proj',Math.min(100,projShipped/7*100));
 }
 
 function renderBuilding(){
-  const cur=WEEKS.find((_,i)=>!done.has(i));
-  const pct=Math.round(done.size/WEEKS.length*100);
-  if(!cur){set('cb-title','All 7 weeks complete');set('cb-desc','Full modern data stack built and shipped.');document.getElementById('cb-stack').innerHTML='';}
-  else{set('cb-title',cur.topic);set('cb-desc',cur.desc);document.getElementById('cb-stack').innerHTML=cur.projStack.map(t=>`<span class="bb-tag">${t}</span>`).join('');}
-  set('cb-pct',pct+'%');bar('cb-bar',pct);
+  if(!logs.length)return;
+  const l=logs[0];
+  set('cb-title',l.skill);set('cb-desc',l.notes);set('cb-hrs',l.hours+'h');set('cb-dt',l.date);
+  document.getElementById('cb-stack').innerHTML=l.lc.filter(e=>e.count>0).map(e=>`<span class="bb-tag">${e.count} ${e.topic} (${e.difficulty})</span>`).join('');
+  const maxH=Math.max(...logs.map(x=>x.hours),1);bar('cb-bar',l.hours/maxH*100);
 }
 
 function renderSkills(){
-  document.getElementById('skills-grid').innerHTML=SKILLS.map(s=>`<div class="skill-cell"><div class="sk-cat">${s.cat}</div><div class="sk-name">${s.name}</div><div class="sk-bar"><div class="sk-fill" style="background:${s.color};width:${s.pct}%"></div></div><div class="sk-level" style="color:${s.color}">${s.pct>=80?'Proficient':s.pct>=65?'Competent':'Learning'}</div></div>`).join('');
+  const sh=skillHours();const maxH=Math.max(...Object.values(sh),1);const totalH=Object.values(sh).reduce((a,b)=>a+b,0);
+  set('sk-tag',totalH%1===0?totalH:totalH.toFixed(1)+'h total');
+  document.getElementById('sk-grid').innerHTML=ALL_SKILLS.map(name=>{
+    const h=sh[name]||0;const color=SKILL_COLORS[name];const pct=h?Math.round(h/maxH*100):0;
+    return`<div class="sk-cell"><div class="sk-cat">${SKILL_CAT[name]||'Other'}</div><div class="sk-name">${name}</div><div class="sk-bar"><div class="sk-fill" style="background:${color};width:${pct}%"></div></div><div class="sk-hrs"><span class="sk-hrs-v" style="color:${h?color:'#3a3a52'}">${h?h%1===0?h+'h':h.toFixed(1)+'h':'—'}</span><span class="sk-hrs-l">${h?'logged':''}</span></div></div>`;
+  }).join('');
+}
+
+function renderLC(){
+  const byTopic=lcByTopic();const topics=Object.entries(byTopic).sort((a,b)=>(b[1].medium+b[1].hard)-(a[1].medium+a[1].hard));
+  const maxTotal=Math.max(...topics.map(([,v])=>v.medium+v.hard),1);
+  const totalLC=topics.reduce((a,[,v])=>a+v.medium+v.hard,0);
+  set('lc-tag',totalLC+' problems · '+topics.length+' topics');
+  const el=document.getElementById('lc-grid');
+  if(!topics.length){el.innerHTML='<div style="padding:28px;font-family:var(--mono);font-size:9px;color:#3a3a52;grid-column:1/-1">No LeetCode logged yet — add problems when logging a session</div>';return;}
+  el.innerHTML=topics.map(([topic,{medium,hard}])=>{const total=medium+hard;return`<div class="lc-cell"><div class="lct-name">${topic}</div><div class="lct-counts">${medium?`<span class="lct-badge lct-med">${medium} med</span>`:''} ${hard?`<span class="lct-badge lct-hard">${hard} hard</span>`:''}</div><div class="lct-bar"><div class="lct-fill" style="width:${Math.round(total/maxTotal*100)}%;background:${hard>medium?'var(--red)':'var(--amber)'}"></div></div></div>`;}).join('');
 }
 
 function renderVelocity(){
-  const max=Math.max(...WEEKS.map(w=>w.sql),1);
-  document.getElementById('vel-bars').innerHTML=WEEKS.map((wk,i)=>{
-    const d=done.has(i),h=d?Math.round(wk.sql/max*100):4;
-    return`<div class="vel-bw"><div class="vel-b" style="height:${h}%;background:${d?'var(--cyan)':'var(--b1)'};">${d?`<div class="vel-bval">${wk.sql}</div>`:''} ${d&&wk.proj?`<div style="position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--green)"></div>`:''}</div><div class="vel-wlbl">W${wk.w}</div></div>`;
-  }).join('');
+  const today=new Date();const days=[];for(let i=13;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push(d.toISOString().slice(0,10));}
+  const hByDay={};logs.forEach(l=>{hByDay[l.date]=(hByDay[l.date]||0)+l.hours;});
+  const maxH=Math.max(...days.map(d=>hByDay[d]||0),1);
+  document.getElementById('vel-bars').innerHTML=days.map(d=>{const h=hByDay[d]||0;const pct=Math.round(h/maxH*100);return`<div class="vel-bw"><div class="vel-b" style="height:${h?pct:2}%;background:${h?'var(--cyan)':'var(--b1)'}">${h?`<div class="vel-v">${h}h</div>`:''}</div><div class="vel-lbl">${d.slice(8)}</div></div>`;}).join('');
 }
 
-let activeCode=0,codePanelsRendered=false;
-function renderCodePanels(){
-  if(codePanelsRendered)return;codePanelsRendered=true;
-  document.getElementById('code-panels').innerHTML=CODE.map((s,i)=>`<div class="cpanel ${i===0?'on':''}" id="cp-${i}"><div class="clang">${s.lang}</div><div class="cblock"><pre>${renderTokens(s.tokens)}</pre></div></div>`).join('');
+function renderCode(){
+  document.getElementById('ctabs').innerHTML=CODE.map((c,i)=>`<button class="code-tab ${i===activeCode?'on':''}" onclick="switchCode(${i})">${c.label}</button>`).join('');
+  document.getElementById('cpanes').innerHTML=CODE.map((c,i)=>`<div class="code-pane ${i===activeCode?'on':''}" id="cp${i}"><div class="clang">${c.lang}</div><pre>${c.lines.join('\n')}</pre></div>`).join('');
 }
-function renderTokens(toks){
-  let h='',l='';
-  toks.forEach(t=>{
-    if(t.t==='br'){h+=l+'\n';l='';return;}
-    if(t.t==='cc')l+=`<span class="cc">${esc(t.v||'')}</span>`;
-    else if(t.t==='co')l+=esc(t.v||'');
-    else l+=`<span class="${t.t}">${esc(t.v||'')}</span>`;
-  });
-  if(l)h+=l;return h;
-}
-function switchCode(i,btn){activeCode=i;document.querySelectorAll('.cpanel').forEach((p,j)=>p.classList.toggle('on',j===i));document.querySelectorAll('.ctab').forEach((t,j)=>t.classList.toggle('on',j===i));}
+function switchCode(i){activeCode=i;document.querySelectorAll('.code-pane').forEach((p,j)=>p.classList.toggle('on',j===i));document.querySelectorAll('.code-tab').forEach((t,j)=>t.classList.toggle('on',j===i));}
 
 function renderProjects(){
-  const ps=WEEKS.filter((_,i)=>done.has(i)&&WEEKS[i].proj);
-  set('proj-tag',ps.length+' shipped');
-  document.getElementById('proj-grid').innerHTML=ps.length
-    ?ps.map(wk=>`<div class="proj-card"><div class="proj-wk" style="color:${wk.color}"><div class="proj-dot" style="background:${wk.color}"></div>WEEK ${wk.w} · COMPLETE</div><div class="proj-name">${wk.projName}</div><div class="proj-desc">${wk.projDesc}</div><div class="proj-stack">${wk.projStack.map(t=>`<span class="proj-tag">${t}</span>`).join('')}</div><a class="proj-link" href="https://github.com/${ghCfg.username||'Jfloyd7720'}/${ghCfg.repo||'de-study-log'}" target="_blank">↗ View on GitHub</a></div>`).join('')
-    :'<div class="proj-empty">Mark training weeks complete to unlock projects</div>';
+  const loggedWeeks=new Set(logs.filter(l=>l.week).map(l=>l.week));
+  const shipped=PROJECTS.filter(p=>loggedWeeks.has(p.week));set('proj-tag',shipped.length+' shipped');
+  document.getElementById('proj-grid').innerHTML=shipped.length?shipped.map(p=>`<div class="proj-card" style="border-left:2px solid ${p.color}18"><div class="proj-wk" style="color:${p.color}"><div class="proj-dot" style="background:${p.color}"></div>WEEK ${p.week} · COMPLETE</div><div class="proj-name">${p.projName}</div><div class="proj-desc">${p.projDesc}</div><div class="proj-stack">${p.projStack.map(t=>`<span class="proj-tag">${t}</span>`).join('')}</div><a class="proj-link" href="https://github.com/${ghCfg.username||'Jfloyd7720'}" target="_blank">↗ View on GitHub</a></div>`).join(''):'<div class="proj-empty">Log a session tagged to a week to unlock projects</div>';
 }
 
 function renderHeatmap(){
-  let h='';
-  WEEKS.forEach((wk,i)=>{
-    const d=done.has(i);
-    h+=`<div class="hm-row"><div class="hm-wlbl">W${wk.w}</div>`;
-    for(let day=0;day<5;day++){const lvl=d?(day<2?'l4':day<4?'l3':'l2'):'';h+=`<div class="hm-cell ${lvl}" onclick="toggleWeek(${i})" title="Week ${wk.w} · ${wk.topic}"></div>`;}
-    h+='</div>';
-  });
-  h+=`<div class="hm-legend"><span>Less</span><div class="hm-sw" style="background:var(--b1)"></div><div class="hm-sw" style="background:rgba(0,229,160,.25)"></div><div class="hm-sw" style="background:rgba(0,229,160,.6)"></div><div class="hm-sw" style="background:var(--green)"></div><span>More</span></div>`;
-  document.getElementById('heatmap').innerHTML=h;
-  set('pow-tag',done.size+' / '+WEEKS.length+' weeks');
+  const logHours={};logs.forEach(l=>{logHours[l.date]=(logHours[l.date]||0)+l.hours;});
+  const start=new Date('2025-01-06');
+  const dayNames=['M','T','W','T','F','S','S'];
+  let html='<div style="display:flex;gap:3px;padding-left:32px;margin-bottom:3px">'+dayNames.map(d=>`<div style="width:13px;font-family:var(--mono);font-size:6px;color:#3a3a52;text-align:center">${d}</div>`).join('')+'</div>';
+  for(let w=0;w<10;w++){
+    html+=`<div class="hm-row"><div class="hm-wl">W${w+1}</div>`;
+    for(let d=0;d<7;d++){const date=new Date(start);date.setDate(start.getDate()+w*7+d);const ds=date.toISOString().slice(0,10);const h=logHours[ds]||0;const lvl=h===0?'hm-l0':h<2?'hm-l1':h<4?'hm-l2':h<6?'hm-l3':'hm-l4';html+=`<div class="hm-cell ${lvl}" title="${ds}${h?' · '+h+'h':''}"></div>`;}
+    html+='</div>';
+  }
+  html+=`<div class="hm-leg"><span>Less</span><div class="hm-sw" style="background:var(--b1)"></div><div class="hm-sw" style="background:rgba(0,229,160,.25)"></div><div class="hm-sw" style="background:rgba(0,229,160,.5)"></div><div class="hm-sw" style="background:var(--green)"></div><span>More</span></div>`;
+  document.getElementById('heatmap').innerHTML=html;
+  set('pow-tag',new Set(logs.map(l=>l.date)).size+' days logged');
 }
 
-function renderCurriculum(){
-  const connected=ghCfg.token&&ghCfg.username;
-  document.getElementById('curr-grid').innerHTML=WEEKS.map((wk,i)=>{
-    const d=done.has(i);
-    return`<div class="curr-cell ${d?'done':''}" onclick="toggleWeek(${i})"><div class="curr-check">${d?'✓':''}</div><div class="curr-wk" style="color:${wk.color}">WEEK ${wk.w}</div><div class="curr-topic">${wk.topic}</div><div class="curr-desc">${wk.desc}</div><div class="curr-bar"><div class="curr-fill" style="background:${wk.color};width:${d?100:0}%"></div></div><div class="curr-status" style="color:${d?wk.color:'#2a2a3e'}">${d?'✓ complete'+(connected?' · committed to GitHub':''):'○ not started'+(connected?' · will commit on complete':'')}</div></div>`;
+function renderLogHistory(){
+  set('log-tag',logs.length+' entries');
+  const el=document.getElementById('log-entries');
+  if(!logs.length){el.innerHTML='<div class="log-empty">No sessions logged yet — hit "Log today" in the nav</div>';return;}
+  el.innerHTML=logs.map((l,i)=>{
+    const color=SKILL_COLORS[l.skill]||'#5a5a7a';
+    const totalLC=l.lc.reduce((a,e)=>a+e.count,0);
+    const lcStr=l.lc.filter(e=>e.count>0).map(e=>`${e.count} ${e.topic}`).join(' · ');
+    const d=new Date(l.date+' ');const dayName=isNaN(d)?'':d.toLocaleDateString('en-GB',{weekday:'short'});
+    return`<div class="log-entry">
+      <div><div class="le-date">${l.date}</div><div class="le-day">${dayName}</div></div>
+      <div>
+        <div class="le-stag" style="background:${color}18;color:${color};border:1px solid ${color}28">${l.skill}</div>
+        <div class="le-notes">${l.notes}</div>
+        <div class="le-meta">
+          ${totalLC?`<div class="le-mi"><div class="le-mid" style="background:var(--amber)"></div>${totalLC} LeetCode${lcStr?' — '+lcStr:''}</div>`:''}
+          ${l.week?`<div class="le-mi"><div class="le-mid" style="background:var(--violet)"></div>Week ${l.week}</div>`:''}
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="le-hrs">${l.hours}h</div>
+        <div class="le-hl">studied</div>
+        <button class="le-del" onclick="delLog(${i})">×</button>
+      </div>
+    </div>`;
   }).join('');
 }
+function delLog(i){if(!confirm('Delete this entry?'))return;logs.splice(i,1);saveState();renderAll();}
 
-function renderCommitLog(){
-  const el=document.getElementById('commit-list');
-  const okCount=commits.filter(c=>c.status==='ok').length;
-  set('commit-tag',okCount+' committed');
-  if(!commits.length){el.innerHTML='<div class="commit-empty">No commits yet — connect GitHub via ⚙ GitHub above, then mark weeks complete.</div>';return;}
-  el.innerHTML=commits.map(c=>`<div class="commit-item"><div class="commit-hash">${c.hash||'———————'}</div><div class="commit-msg">${esc(c.message)}</div><div class="commit-date">${c.date}</div><div class="commit-badge ${c.status==='ok'?'cb-ok':c.status==='pending'?'cb-pending':'cb-err'}">${c.status==='ok'?'pushed':c.status==='pending'?'pending':'failed'}</div></div>`).join('');
+/* ── SQL CONSOLE ── */
+function renderSchema(){
+  const db=deriveDB();
+  document.getElementById('schema-tbls').innerHTML=Object.entries(SCHEMA_DEF).map(([t,{color,cols}])=>`<div class="sb-tbl"><div class="sb-tbl-h" onclick="togCols('${t}')"><div class="sb-dot" style="background:${color}"></div><span class="sb-tbl-name" style="color:${color}">${t}</span><span class="sb-n">${db[t]?.length||0}</span></div><div class="sb-cols" id="cols${t}">${cols.map(c=>`<div class="sb-col">${c}</div>`).join('')}</div></div>`).join('');
+  document.getElementById('ex-btns').innerHTML=SQL_EXAMPLES.map((e,i)=>`<button class="sb-ex" onclick="loadEx(${i})">${e.label}</button>`).join('');
 }
+function togCols(t){const el=document.getElementById('cols'+t);el.style.display=el.style.display==='block'?'none':'block';}
 
-/* NAV */
 function nav(p){
   document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('on'));
-  document.querySelectorAll('.tb-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('on'));
   document.getElementById('page-'+p).classList.add('on');
-  document.querySelectorAll('.tb-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(p==='overview'?'over':'sql'))t.classList.add('on');});
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(p==='overview'?'over':'sql'))t.classList.add('on');});
   if(p==='console'){renderSchema();if(!document.getElementById('ed-ta').value)loadEx(0);updEd();}
 }
 
-/* PIPE ANIMATION */
-const PKS=[{id:'pk1',f:108,t:148},{id:'pk2',f:258,t:298},{id:'pk3',f:408,t:448},{id:'pk4',f:558,t:598},{id:'pk5',f:708,t:748}];
-let ph=0;
-function animPipes(){
-  PKS.forEach((p,i)=>{
-    const el=document.getElementById(p.id);if(!el)return;
-    const phase=(ph/100+i*0.22)%1;
-    const x=p.f+(p.t-p.f)*Math.min(1,phase*6%1);
-    const op=phase<0.18?Math.sin(phase/0.18*Math.PI):0;
-    el.setAttribute('cx',x);el.setAttribute('opacity',op.toFixed(2));
-  });
-  ph=(ph+0.35)%100;requestAnimationFrame(animPipes);
-}
-animPipes();
+/* PIPE ANIM */
+const PKTS=[{id:'p1',from:108,to:145},{id:'p2',from:255,to:292},{id:'p3',from:402,to:439},{id:'p4',from:549,to:586},{id:'p5',from:696,to:733}];
+let phase=0;
+function animPipe(){PKTS.forEach((p,i)=>{const el=document.getElementById(p.id);if(!el)return;const ph=(phase/100+i*0.2)%1;el.setAttribute('cx',p.from+(p.to-p.from)*Math.min(1,(ph*5)%1));el.setAttribute('opacity',ph<0.2?Math.sin(ph/0.2*Math.PI):0);});phase=(phase+0.4)%100;requestAnimationFrame(animPipe);}
+animPipe();
 
-/* SQL CONSOLE */
-function renderSchema(){
-  document.getElementById('schema-tbls').innerHTML=Object.entries(SCHEMA_DEF).map(([t,{color,cols}])=>`<div class="sb-tbl"><div class="sb-tbl-h" onclick="togCols('${t}')"><div class="sb-dot" style="background:${color}"></div><span class="sb-tbl-name" style="color:${color}">${t}</span><span class="sb-tbl-n">${db[t]?.length||0}</span></div><div class="sb-cols" id="cols-${t}">${cols.map(c=>`<div class="sb-col">${c}</div>`).join('')}</div></div>`).join('');
-  document.getElementById('example-btns').innerHTML=EXAMPLES.map((e,i)=>`<button class="sb-ex" onclick="loadEx(${i})">${e.label}</button>`).join('');
-}
-function togCols(t){const el=document.getElementById('cols-'+t);el.style.display=el.style.display==='block'?'none':'block';}
+/* SQL EDITOR */
+const KWS=new Set(['SELECT','FROM','WHERE','GROUP','BY','ORDER','LIMIT','AS','AND','OR','NOT','IN','HAVING','WITH','JOIN','ON','INNER','LEFT','RIGHT','OUTER','CASE','WHEN','THEN','ELSE','END','OVER','PARTITION','DESC','ASC','TRUE','FALSE','NULL','DISTINCT','ROUND','SUM','COUNT','AVG','MAX','MIN','LAG','LEAD','NULLIF','COALESCE','ROW_NUMBER','RANK']);
+function hlSQL(sql){return sql.split(/(\s+|[(),;]|'[^']*'|--[^\n]*|\n)/g).map(t=>{if(!t)return t;if(t.startsWith('--'))return`<span class="cmt">${esc(t)}</span>`;if(t.startsWith("'"))return`<span class="str">${esc(t)}</span>`;const u=t.toUpperCase().replace(/\($/,'');if(KWS.has(u))return`<span class="kw">${esc(t)}</span>`;if(!isNaN(t)&&t.trim())return`<span class="num">${esc(t)}</span>`;return esc(t);}).join('');}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function updEd(){const ta=document.getElementById('ed-ta');if(!ta)return;const v=ta.value;document.getElementById('ed-hl').innerHTML=hlSQL(v);document.getElementById('ed-lines').innerHTML=Array.from({length:v.split('\n').length},(_,i)=>i+1).join('<br>');}
+document.getElementById('ed-ta').addEventListener('input',updEd);
+document.getElementById('ed-ta').addEventListener('scroll',()=>{const ta=document.getElementById('ed-ta');document.getElementById('ed-hl').scrollTop=ta.scrollTop;document.getElementById('ed-lines').scrollTop=ta.scrollTop;});
+document.getElementById('ed-ta').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=e.target.selectionStart;e.target.value=e.target.value.substring(0,s)+'  '+e.target.value.substring(e.target.selectionEnd);e.target.selectionStart=e.target.selectionEnd=s+2;updEd();}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQ();}});
+function loadEx(i){document.getElementById('ed-ta').value=SQL_EXAMPLES[i].q;updEd();document.getElementById('res-area').innerHTML='<div class="res-empty">Press ▶ Run to execute</div>';}
+function clearEd(){document.getElementById('ed-ta').value='';updEd();document.getElementById('res-area').innerHTML='<div class="res-empty">Write a query and run it</div>';}
 
-const KWS=new Set(['SELECT','FROM','WHERE','GROUP','BY','ORDER','LIMIT','AS','AND','OR','NOT','IN','HAVING','WITH','JOIN','ON','INNER','LEFT','RIGHT','OUTER','CASE','WHEN','THEN','ELSE','END','OVER','PARTITION','DESC','ASC','TRUE','FALSE','NULL','DISTINCT']);
-const FNS=new Set(['COUNT','SUM','AVG','MAX','MIN','ROUND','ROW_NUMBER','RANK','DENSE_RANK','LAG','LEAD','NULLIF','COALESCE']);
-
-function hlSQL(sql){
-  return sql.split(/(\s+|[(),;]|'[^']*'|--[^\n]*|\n)/g).map(t=>{
-    if(!t)return t;
-    if(t.startsWith('--'))return`<span class="cmt">${esc(t)}</span>`;
-    if(t.startsWith("'"))return`<span class="str">${esc(t)}</span>`;
-    const u=t.toUpperCase().replace(/\($/,'');
-    if(KWS.has(u))return`<span class="kw">${esc(t)}</span>`;
-    if(FNS.has(u))return`<span class="fn">${esc(t)}</span>`;
-    if(!isNaN(t)&&t.trim())return`<span class="num">${esc(t)}</span>`;
-    return esc(t);
-  }).join('');
-}
-
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-function updEd(){
-  const ta=document.getElementById('ed-ta');if(!ta)return;
-  document.getElementById('ed-hl').innerHTML=hlSQL(ta.value);
-  document.getElementById('ed-lines').innerHTML=Array.from({length:ta.value.split('\n').length},(_,i)=>i+1).join('<br>');
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  const ta=document.getElementById('ed-ta');if(!ta)return;
-  ta.addEventListener('input',updEd);
-  ta.addEventListener('scroll',()=>{document.getElementById('ed-hl').scrollTop=ta.scrollTop;document.getElementById('ed-lines').scrollTop=ta.scrollTop;});
-  ta.addEventListener('keydown',e=>{
-    if(e.key==='Tab'){e.preventDefault();const s=e.target.selectionStart;ta.value=ta.value.substring(0,s)+'  '+ta.value.substring(e.target.selectionEnd);ta.selectionStart=ta.selectionEnd=s+2;updEd();}
-    if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQ();}
-  });
-  loadState();
-});
-
-function loadEx(i){const ta=document.getElementById('ed-ta');if(ta){ta.value=EXAMPLES[i].q;updEd();}document.getElementById('res-area').innerHTML='<div class="res-empty">Press ▶ Run to execute</div>';}
-function clearEd(){const ta=document.getElementById('ed-ta');if(ta){ta.value='';updEd();}document.getElementById('res-area').innerHTML='<div class="res-empty">Write a query and run it</div>';}
-
-let hist=[];
 function runQ(){
-  const ta=document.getElementById('ed-ta');const q=ta?.value.trim();if(!q)return;
+  const q=document.getElementById('ed-ta').value.trim();if(!q)return;
   const btn=document.getElementById('run-btn');btn.disabled=true;btn.textContent='Running…';
-  setTimeout(()=>{
-    try{const r=execSQL(q,db);renderRes(r);hist=[{q,ts:new Date().toLocaleTimeString(),n:r.rows.length},...hist].slice(0,8);renderHist();}
-    catch(e){document.getElementById('res-area').innerHTML=`<div class="err-panel"><div style="color:var(--red);font-size:8px;letter-spacing:1px;margin-bottom:6px">QUERY ERROR</div>${esc(e.message)}</div>`;}
-    btn.disabled=false;btn.textContent='▶ Run';
-  },180);
+  setTimeout(()=>{try{const r=execSQL(q,deriveDB());renderRes(r);sqlHist=[{q,ts:new Date().toLocaleTimeString(),n:r.rows.length},...sqlHist].slice(0,8);renderHist();}catch(e){document.getElementById('res-area').innerHTML=`<div class="err-panel"><div style="color:var(--red);font-size:7px;letter-spacing:1px;margin-bottom:5px">ERROR</div>${esc(e.message)}</div>`;}btn.disabled=false;btn.textContent='▶ Run';},180);
 }
 
 function renderRes(r){
   const area=document.getElementById('res-area');
-  if(!r.rows.length){area.innerHTML=`<div class="res-bar"><span class="res-lbl" style="color:var(--green)">Results</span><span class="res-msg">0 rows</span></div><div class="res-empty">No rows returned.</div>`;return;}
+  if(!r.rows.length){area.innerHTML=`<div class="res-bar"><span class="res-lbl" style="color:var(--green)">Results</span><span class="res-msg">0 rows</span></div><div class="res-empty">No rows — log a session to populate data</div>`;return;}
   const cols=Object.keys(r.rows[0]);
-  area.innerHTML=`<div class="res-bar"><span class="res-lbl" style="color:var(--green)">Results</span><span class="res-msg">— ${r.rows.length} rows · ${cols.length} cols</span><span style="margin-left:auto;font-family:var(--mono);font-size:8px;color:var(--violet)">live · ${new Date().toLocaleTimeString()}</span></div><div style="overflow:auto"><table class="res-tbl"><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${r.rows.map(row=>`<tr>${cols.map(c=>{const v=row[c];let col='var(--text)';if(v===true)col='#00e5a0';else if(v===false)col='#ff4d6d';else if(typeof v==='number')col='#f5a623';else if(v===null)col='#2a2a3e';else if(v==='Complete'||v==='ok')col='#00e5a0';else if(v==='pending')col='#f5a623';else if(v==='err')col='#ff4d6d';const d=v===null?'<span style="color:#2a2a3e">null</span>':v===true?'true':v===false?'false':esc(String(v));return`<td style="color:${col}">${d}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
+  area.innerHTML=`<div class="res-bar"><span class="res-lbl" style="color:var(--green)">Results</span><span class="res-msg">— ${r.rows.length} rows · ${cols.length} cols</span><span style="margin-left:auto;font-family:var(--mono);font-size:7px;color:var(--violet)">live · ${new Date().toLocaleTimeString()}</span></div><div style="overflow:auto"><table class="res-tbl"><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${r.rows.map(row=>`<tr>${cols.map(c=>{const v=row[c];let col='var(--text)';if(v===true)col='#00e5a0';else if(v===false)col='#ff4d6d';else if(typeof v==='number')col='#f5a623';else if(v===null)col='#3a3a52';else if(v==='Hard')col='#ff4d6d';else if(v==='Medium')col='#f5a623';const d=v===null?`<span style="color:#3a3a52">null</span>`:v===true?'true':v===false?'false':esc(String(v));return`<td style="color:${col}">${d}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 
-function renderHist(){
-  document.getElementById('hist-list').innerHTML=hist.map((h,i)=>`<div class="sb-tbl" style="cursor:pointer" onclick="restoreH(${i})"><div class="sb-tbl-h"><span style="font-family:var(--mono);font-size:8px;color:var(--violet)">${h.ts}</span><span class="sb-tbl-n">${h.n}r</span></div><div style="padding:0 12px 6px;font-family:var(--mono);font-size:8px;color:#2a2a3e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(h.q.split('\n')[0].substring(0,34))}…</div></div>`).join('');
-}
-function restoreH(i){const ta=document.getElementById('ed-ta');if(ta){ta.value=hist[i].q;updEd();}}
+function renderHist(){document.getElementById('hist-list').innerHTML=sqlHist.map((h,i)=>`<div class="sb-tbl" style="cursor:pointer" onclick="document.getElementById('ed-ta').value=sqlHist[${i}].q;updEd()"><div class="sb-tbl-h"><span style="font-family:var(--mono);font-size:7px;color:var(--violet)">${h.ts}</span><span class="sb-n">${h.n} rows</span></div><div style="padding:0 11px 7px;font-family:var(--mono);font-size:7px;color:#3a3a52;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(h.q.split('\n')[0].substring(0,34))}…</div></div>`).join('');}
 
 /* SQL ENGINE */
-function execSQL(query,db){
-  const q=query.trim().replace(/\s+/g,' ');
-  const fm=q.toUpperCase().match(/FROM\s+(\w+)/);
-  if(!fm)throw new Error('No FROM clause found.');
-  const tbl=fm[1].toLowerCase();
-  if(!db[tbl])throw new Error(`Table '${tbl}' not found.\nAvailable: ${Object.keys(db).join(', ')}`);
-  let rows=db[tbl].map(r=>({...r}));
-  const wm=q.match(/WHERE\s+(.*?)(?:\s+GROUP BY|\s+ORDER BY|\s+LIMIT|$)/is);
-  if(wm)rows=rows.filter(r=>evalW(wm[1].trim(),r));
-  const sm=q.match(/SELECT\s+(.*?)\s+FROM/is);const sr=sm?sm[1].trim():'*';
-  const gm=q.match(/GROUP BY\s+(.*?)(?:\s+ORDER BY|\s+HAVING|\s+LIMIT|$)/is);
-  if(gm){rows=doGroup(rows,gm[1].split(',').map(s=>s.trim().toLowerCase()),sr);}else{rows=doSel(rows,sr);}
-  const om=q.match(/ORDER BY\s+(.*?)(?:\s+LIMIT|$)/is);
-  if(om){rows=[...rows].sort((a,b)=>{for(const p of om[1].split(',')){const ts=p.trim().split(/\s+/);const col=ts[0].toLowerCase();const desc=ts[1]?.toUpperCase()==='DESC';const ak=fk(a,col),bk=fk(b,col);const av=ak?a[ak]:undefined,bv=bk?b[bk]:undefined;if(av<bv)return desc?1:-1;if(av>bv)return desc?-1:1;}return 0;});}
-  const lm=q.match(/LIMIT\s+(\d+)/i);if(lm)rows=rows.slice(0,parseInt(lm[1]));
-  return{rows};
-}
+function execSQL(query,db){const q=query.trim().replace(/\s+/g,' ');const fm=q.toUpperCase().match(/FROM\s+(\w+)/);if(!fm)throw new Error('No FROM clause.');const tbl=fm[1].toLowerCase();if(!db[tbl])throw new Error(`Table '${tbl}' not found. Available: ${Object.keys(db).join(', ')}`);let rows=db[tbl].map(r=>({...r}));const wm=q.match(/WHERE\s+(.*?)(?:\s+GROUP BY|\s+ORDER BY|\s+LIMIT|$)/is);if(wm)rows=rows.filter(r=>evalW(wm[1].trim(),r));const sm=q.match(/SELECT\s+(.*?)\s+FROM/is);const sr=sm?sm[1].trim():'*';const gm=q.match(/GROUP BY\s+(.*?)(?:\s+ORDER BY|\s+HAVING|\s+LIMIT|$)/is);if(gm){rows=doGroup(rows,gm[1].split(',').map(s=>s.trim().toLowerCase()),sr);}else{rows=doSel(rows,sr);}const om=q.match(/ORDER BY\s+(.*?)(?:\s+LIMIT|$)/is);if(om){rows=[...rows].sort((a,b)=>{for(const p of om[1].split(',')){const ts=p.trim().split(/\s+/);const col=ts[0].toLowerCase();const desc=ts[1]?.toUpperCase()==='DESC';const ak=fk(a,col),bk=fk(b,col);const av=ak?a[ak]:undefined,bv=bk?b[bk]:undefined;if(av<bv)return desc?1:-1;if(av>bv)return desc?-1:1;}return 0;});}const lm=q.match(/LIMIT\s+(\d+)/i);if(lm)rows=rows.slice(0,parseInt(lm[1]));return{rows};}
 function fk(row,col){return Object.keys(row).find(k=>k.toLowerCase()===col.toLowerCase());}
-function evalW(c,row){
-  let s=c;
-  const rep=(pat,fn)=>{s=s.replace(pat,fn);};
-  rep(/(\w+)\s*=\s*'([^']*)'/gi,(_,col,val)=>{const k=fk(row,col);return k&&String(row[k]).toLowerCase()===val.toLowerCase()?'true':'false';});
-  rep(/(\w+)\s*=\s*(true|false)/gi,(_,col,val)=>{const k=fk(row,col);return k&&String(row[k])===val?'true':'false';});
-  rep(/(\w+)\s*=\s*(\d+)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])===Number(val)?'true':'false';});
-  rep(/(\w+)\s*>=\s*(\d+)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])>=Number(val)?'true':'false';});
-  rep(/(\w+)\s*<=\s*(\d+)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])<=Number(val)?'true':'false';});
-  try{return new Function('return '+s)();}catch{return true;}
-}
+function evalW(c,row){let s=c;const rep=(pat,fn)=>{s=s.replace(pat,fn);};rep(/(\w+)\s*=\s*'([^']*)'/gi,(_,col,val)=>{const k=fk(row,col);return k&&String(row[k]).toLowerCase()===val.toLowerCase()?'true':'false';});rep(/(\w+)\s*=\s*(true|false)/gi,(_,col,val)=>{const k=fk(row,col);return k&&String(row[k])===val?'true':'false';});rep(/(\w+)\s*=\s*(\d+(?:\.\d+)?)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])===Number(val)?'true':'false';});rep(/(\w+)\s*>=\s*(\d+(?:\.\d+)?)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])>=Number(val)?'true':'false';});rep(/(\w+)\s*<=\s*(\d+(?:\.\d+)?)/gi,(_,col,val)=>{const k=fk(row,col);return k&&Number(row[k])<=Number(val)?'true':'false';});try{return new Function('return '+s)();}catch{return true;}}
 function parseSel(raw){return raw.split(',').map(s=>{const m=s.trim().match(/^(.*?)\s+AS\s+(\w+)$/i);return m?{expr:m[1].trim(),alias:m[2]}:{expr:s.trim(),alias:null};});}
-function evalE(e,row,all){
-  e=e.trim();
-  if(/^COUNT\(\*\)$/i.test(e))return all.length;
-  if(/^COUNT\(CASE WHEN/i.test(e)){const m=e.match(/WHEN\s+(.*?)\s+THEN/i);return m?all.filter(r=>evalW(m[1],r)).length:0;}
-  const sm=e.match(/^SUM\((\w+)\)$/i);if(sm)return all.reduce((a,r)=>a+(Number(r[fk(r,sm[1])])||0),0);
-  if(/^SUM\(CASE WHEN/i.test(e)){const m=e.match(/WHEN\s+(.*?)\s+THEN\s+(\S+)\s+ELSE\s+(\S+)/i);if(m)return all.reduce((a,r)=>a+(evalW(m[1],r)?Number(m[2]):Number(m[3])),0);}
-  if(/SUM\(.*\)\s+OVER/i.test(e)){const cm=e.match(/SUM\((\w+)\)/i);if(cm){const idx=all.indexOf(row);const k=fk(row,cm[1]);return all.slice(0,idx+1).reduce((a,r)=>a+(Number(r[k])||0),0);}}
-  const am=e.match(/^AVG\((\w+)\)$/i);if(am){const k=fk(all[0]||{},am[1]);const vs=all.map(r=>Number(r[k])).filter(v=>!isNaN(v));return vs.length?+(vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(1):null;}
-  const rm=e.match(/^ROUND\((.*),\s*(\d+)\)$/i);if(rm)return+Number(evalE(rm[1],row,all)).toFixed(Number(rm[2]));
-  const mxm=e.match(/^MAX\((\w+)\)$/i);if(mxm){const k=fk(all[0]||{},mxm[1]);return Math.max(...all.map(r=>Number(r[k])||0));}
-  const mnm=e.match(/^MIN\((\w+)\)$/i);if(mnm){const k=fk(all[0]||{},mnm[1]);return Math.min(...all.map(r=>Number(r[k])||0));}
-  const k=fk(row,e);if(k)return row[k];if(!isNaN(e))return Number(e);return e;
-}
+function evalE(expr,row,all){const e=expr.trim();if(/^COUNT\(\*\)$/i.test(e))return all.length;if(/^COUNT\(CASE WHEN/i.test(e)){const m=e.match(/WHEN\s+(.*?)\s+THEN/i);return m?all.filter(r=>evalW(m[1],r)).length:0;}const sm=e.match(/^SUM\((\w+)\)$/i);if(sm)return all.reduce((a,r)=>a+(Number(r[fk(r,sm[1])])||0),0);if(/^SUM\(CASE WHEN/i.test(e)){const m=e.match(/WHEN\s+(.*?)\s+THEN\s+(\S+)\s+ELSE\s+(\S+)/i);if(m)return all.reduce((a,r)=>a+(evalW(m[1],r)?Number(m[2]):Number(m[3])),0);}if(/SUM\(.*\)\s+OVER/i.test(e)){const cm=e.match(/SUM\((\w+)\)/i);if(cm){const idx=all.indexOf(row);const k=fk(row,cm[1]);return+(all.slice(0,idx+1).reduce((a,r)=>a+(Number(r[k])||0),0)).toFixed(1);}}const am=e.match(/^AVG\((\w+)\)$/i);if(am){const k=fk(all[0]||{},am[1]);const vs=all.map(r=>Number(r[k])).filter(v=>!isNaN(v));return vs.length?+(vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(1):null;}const rm=e.match(/^ROUND\((.*),\s*(\d+)\)$/i);if(rm)return+Number(evalE(rm[1],row,all)).toFixed(Number(rm[2]));const mxm=e.match(/^MAX\((\w+)\)$/i);if(mxm){const k=fk(all[0]||{},mxm[1]);return Math.max(...all.map(r=>Number(r[k])||0));}const mnm=e.match(/^MIN\((\w+)\)$/i);if(mnm){const k=fk(all[0]||{},mnm[1]);return Math.min(...all.map(r=>Number(r[k])||0));}const k=fk(row,e);if(k)return row[k];if(!isNaN(e))return Number(e);return e;}
 function doSel(rows,raw){if(raw==='*')return rows;const cols=parseSel(raw);return rows.map(row=>{const out={};cols.forEach(({expr,alias})=>{out[alias||expr.toLowerCase().replace(/[^a-z0-9_]/g,'_')]=evalE(expr,row,rows);});return out;});}
 function doGroup(rows,gcols,raw){const groups={};rows.forEach(row=>{const key=gcols.map(c=>{const k=fk(row,c);return k?row[k]:null;}).join('|');if(!groups[key])groups[key]={rows:[],sample:row};groups[key].rows.push(row);});const cols=parseSel(raw);return Object.values(groups).map(({rows:gr,sample})=>{const out={};cols.forEach(({expr,alias})=>{out[alias||expr.toLowerCase().replace(/[^a-z0-9_]/g,'_')]=evalE(expr,sample,gr);});return out;});}
 
-/* HELPERS */
 function set(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 function bar(id,pct){const el=document.getElementById(id);if(el)el.style.width=Math.min(100,Math.max(0,pct))+'%';}
-function resetAll(){if(!confirm('Reset all training data and commit log?'))return;done.clear();commits=[];try{sessionStorage.removeItem(SK);sessionStorage.removeItem(SK+'_c');}catch(e){}rebuild();renderAll();}
+function resetAll(){if(!confirm('Delete ALL log data? Cannot be undone.'))return;logs=[];try{localStorage.removeItem(SK);}catch(e){}renderAll();}
 
-if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',loadState);}else{loadState();}
+loadState();
 </script>
 </body>
 </html>
