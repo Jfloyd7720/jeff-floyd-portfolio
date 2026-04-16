@@ -35,6 +35,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
 .gh-dot{width:5px;height:5px;border-radius:50%}
 .page{display:none}.page.on{display:block}
 
+/* SYNC BANNER */
+.sync-banner{display:none;background:rgba(0,212,255,.04);border-bottom:1px solid rgba(0,212,255,.1);padding:6px 24px;font-family:var(--mono);font-size:8px;color:var(--cyan);letter-spacing:1px;align-items:center;gap:7px}
+.sync-banner.show{display:flex}
+.sync-spin{width:8px;height:8px;border-radius:50%;border:1px solid rgba(0,212,255,.3);border-top-color:var(--cyan);animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 /* MODALS */
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
 .modal-backdrop.open{display:flex}
@@ -355,6 +361,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
   <div class="avail"><div class="avail-dot"></div>Available</div>
 </div>
 
+<!-- SYNC BANNER -->
+<div class="sync-banner" id="sync-banner">
+  <div class="sync-spin"></div>
+  <span id="sync-msg">Syncing from GitHub…</span>
+</div>
+
 <!-- OVERVIEW -->
 <div class="page on" id="page-overview">
 
@@ -520,11 +532,63 @@ let activeCode=0;
 let sqlHist=[];
 let lcId=0;
 
+/* ─────────────────────────────────────────
+   PUBLIC DATA SOURCE
+   Hardcoded so anyone opening the portfolio
+   sees the real stats — no login needed.
+   Keep your repo public and this just works.
+───────────────────────────────────────── */
+const PUBLIC_USER='Jfloyd7720';
+const PUBLIC_REPO='de-study-log';
+
+async function syncFromGitHub(){
+  /* Always fetch using the public raw URL — works for anyone, no token required */
+  const user=PUBLIC_USER;
+  const repo=PUBLIC_REPO;
+  const banner=document.getElementById('sync-banner');
+  const msg=document.getElementById('sync-msg');
+  banner.classList.add('show');
+  msg.textContent='Loading study data…';
+  try{
+    const rawUrl=`https://raw.githubusercontent.com/${user}/${repo}/main/study-log.json`;
+    const res=await fetch(rawUrl,{cache:'no-store'});
+    if(!res.ok){banner.classList.remove('show');return;}
+    const remote=await res.json();
+    mergeRemote(remote);
+  }catch(e){
+    console.warn('GitHub sync failed:',e.message);
+  }finally{
+    banner.classList.remove('show');
+  }
+}
+
+function mergeRemote(remote){
+  if(!remote||!Array.isArray(remote.sessions)||remote.sessions.length===0)return;
+
+  const remoteLogs=remote.sessions.map((s,i)=>({
+    id:s.id||Date.now()+i,
+    date:s.date,skill:s.skill,hours:s.hours,notes:s.notes,week:s.week||null,
+    lc:Array.isArray(s.leetcode)?s.leetcode.map(e=>({topic:e.topic,count:e.count,difficulty:e.difficulty||'Medium'})):[]
+  }));
+
+  /* Skip re-render if already showing identical data (avoids flicker for owner) */
+  const alreadyCurrent=remoteLogs.length===logs.length&&remoteLogs[0]?.id===logs[0]?.id;
+  if(alreadyCurrent)return;
+
+  logs=remoteLogs;
+  /* Only write back to localStorage on the owner's device */
+  if(ghCfg.token)saveState();
+  renderAll();
+}
+
 function loadState(){
   try{logs=JSON.parse(localStorage.getItem(SK)||'[]');}catch(e){logs=[];}
   try{const g=JSON.parse(localStorage.getItem(GH_SK)||'{}');if(g.username)ghCfg=g;}catch(e){}
   commitCount=parseInt(localStorage.getItem(GH_SK+'_c')||'0');
-  updateGHStatus();renderAll();
+  updateGHStatus();
+  renderAll();
+  /* Kick off background sync — updates UI if remote is ahead of local */
+  syncFromGitHub();
 }
 function saveState(){try{localStorage.setItem(SK,JSON.stringify(logs));}catch(e){}}
 
@@ -606,7 +670,7 @@ async function commitToGH(entry){
     const sh=skillHours();
     const totalHrs=logs.reduce((a,l)=>a+l.hours,0);
     const totalLC=logs.reduce((a,l)=>a+l.lc.reduce((b,e)=>b+e.count,0),0);
-    const logData={updated:new Date().toISOString(),engineer:'Jeff Floyd',role:'Data Engineer',location:'London',stats:{total_hours:Math.round(totalHrs*10)/10,total_leetcode:totalLC,total_sessions:logs.length,skills_hours:sh},sessions:logs.map(l=>({date:l.date,skill:l.skill,hours:l.hours,notes:l.notes,leetcode:l.lc}))};
+    const logData={updated:new Date().toISOString(),engineer:'Jeff Floyd',role:'Data Engineer',location:'London',stats:{total_hours:Math.round(totalHrs*10)/10,total_leetcode:totalLC,total_sessions:logs.length,skills_hours:sh},sessions:logs.map(l=>({id:l.id,date:l.date,skill:l.skill,hours:l.hours,notes:l.notes,week:l.week,leetcode:l.lc}))};
     const lcSummary=entry.lc.length?` · ${entry.lc.reduce((a,e)=>a+e.count,0)} LeetCode (${entry.lc.map(e=>`${e.count} ${e.topic}`).join(', ')})`:'';;
     const msg=`[${entry.date}] ${entry.skill} — ${entry.hours}h${lcSummary}`;
     const content=btoa(unescape(encodeURIComponent(JSON.stringify(logData,null,2))));
@@ -626,7 +690,16 @@ async function commitToGH(entry){
 
 function openSettings(){document.getElementById('gh-user').value=ghCfg.username||'';document.getElementById('gh-tok').value=ghCfg.token||'';document.getElementById('gh-repo').value=ghCfg.repo||'de-study-log';document.getElementById('test-res').style.display='none';document.getElementById('settings-modal').classList.add('open');}
 function closeSettings(){document.getElementById('settings-modal').classList.remove('open');}
-function saveSettings(){ghCfg.username=document.getElementById('gh-user').value.trim();ghCfg.token=document.getElementById('gh-tok').value.trim();ghCfg.repo=document.getElementById('gh-repo').value.trim()||'de-study-log';try{localStorage.setItem(GH_SK,JSON.stringify(ghCfg));}catch(e){}updateGHStatus();closeSettings();toast('ok','Connected',`GitHub connected as @${ghCfg.username}`);}
+function saveSettings(){
+  ghCfg.username=document.getElementById('gh-user').value.trim();
+  ghCfg.token=document.getElementById('gh-tok').value.trim();
+  ghCfg.repo=document.getElementById('gh-repo').value.trim()||'de-study-log';
+  try{localStorage.setItem(GH_SK,JSON.stringify(ghCfg));}catch(e){}
+  updateGHStatus();closeSettings();
+  toast('ok','Connected',`GitHub connected as @${ghCfg.username}`);
+  /* Immediately sync so the new device gets data right away */
+  syncFromGitHub();
+}
 function clearSettings(){ghCfg={username:'',token:'',repo:'de-study-log'};try{localStorage.removeItem(GH_SK);}catch(e){}updateGHStatus();closeSettings();}
 async function testConn(){
   const u=document.getElementById('gh-user').value.trim(),t=document.getElementById('gh-tok').value.trim(),r=document.getElementById('gh-repo').value.trim()||'de-study-log';
