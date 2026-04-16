@@ -51,6 +51,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
 .modal-close{font-size:18px;color:#5a5a7a;cursor:pointer;background:none;border:none;line-height:1}
 .modal-close:hover{color:var(--text)}
 .modal-body{padding:22px 24px;display:flex;flex-direction:column;gap:16px}
+@media(max-width:500px){.modal-body{padding:16px}.modal-hdr{padding:14px 16px}.modal-actions{padding:12px 16px}.fr{grid-template-columns:1fr}}
 .field{}
 .fl{font-family:var(--mono);font-size:8px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px}
 .fl .req{color:var(--red)}
@@ -62,7 +63,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
 .fhint{font-size:9px;color:#3a3a52;margin-top:4px;font-family:var(--mono)}
 
 .lce-wrap{display:flex;flex-direction:column;gap:7px}
-.lce{display:grid;grid-template-columns:1fr 80px auto auto;gap:6px;align-items:center}
+.lce{display:grid;grid-template-columns:1fr 60px auto auto;gap:5px;align-items:center}
+@media(max-width:500px){.lce{grid-template-columns:1fr 52px auto auto}}
 .lce-topic{padding:7px 10px;background:var(--bg);border:1px solid var(--b2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:10px;outline:none;width:100%}
 .lce-topic:focus{border-color:var(--cyan)}
 .lce-count{padding:7px 10px;background:var(--bg);border:1px solid var(--b2);border-radius:4px;color:var(--amber);font-family:var(--mono);font-size:11px;outline:none;width:100%}
@@ -236,10 +238,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
 .run-btn:hover:not(:disabled){background:rgba(0,212,255,.1)}.run-btn:disabled{opacity:.3;cursor:not-allowed}
 .clr-btn{font-family:var(--mono);font-size:9px;padding:5px 8px;border-radius:3px;border:1px solid var(--b2);background:transparent;color:#5a5a7a;cursor:pointer}
 .clr-btn:hover{color:var(--text)}
-.ed-inner{position:relative}
-.ed-lines{position:absolute;left:0;top:0;bottom:0;width:36px;padding:12px 7px 12px 0;font-family:var(--mono);font-size:10px;line-height:22px;color:#2a2a3e;text-align:right;user-select:none;border-right:1px solid var(--b1);background:rgba(0,0,0,.2);overflow:hidden}
-.ed-hl{position:absolute;top:0;left:36px;right:0;padding:12px;font-family:var(--mono);font-size:10px;line-height:22px;white-space:pre-wrap;word-break:break-all;pointer-events:none;overflow:hidden;color:transparent}
-.ed-ta{position:relative;width:100%;min-height:130px;padding:12px 12px 12px 50px;font-family:var(--mono);font-size:10px;line-height:22px;background:transparent;border:none;color:var(--text);resize:vertical;outline:none;caret-color:var(--cyan)}
+.ed-inner{position:relative;overflow:hidden}
+.ed-lines{position:absolute;left:0;top:0;bottom:0;width:36px;padding:12px 7px 12px 0;font-family:var(--mono);font-size:10px;line-height:22px;color:#2a2a3e;text-align:right;user-select:none;border-right:1px solid var(--b1);background:rgba(0,0,0,.2);overflow:hidden;pointer-events:none;z-index:2}
+.ed-hl{position:absolute;top:0;left:36px;right:0;padding:12px;font-family:var(--mono);font-size:10px;line-height:22px;white-space:pre;pointer-events:none;overflow:hidden;color:transparent;z-index:1}
+.ed-ta{position:relative;width:100%;min-height:160px;max-height:40vh;padding:12px 12px 12px 50px;font-family:var(--mono);font-size:10px;line-height:22px;background:transparent;border:none;color:var(--text);resize:none;outline:none;caret-color:var(--cyan);overflow:auto;white-space:pre;z-index:3}
 .res-bar{background:var(--s1);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:7px 13px;display:flex;align-items:center;gap:8px}
 .res-lbl{font-family:var(--mono);font-size:7px;letter-spacing:2px;text-transform:uppercase}
 .res-msg{font-family:var(--mono);font-size:8px;color:#5a5a7a}
@@ -254,11 +256,53 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
 .footer-note{font-family:var(--mono);font-size:7px;color:#3a3a52}
 .reset-btn{font-family:var(--mono);font-size:7px;padding:4px 8px;border-radius:3px;border:1px solid rgba(255,77,109,.15);background:transparent;color:#5a3a42;cursor:pointer;margin-left:auto}
 .reset-btn:hover{color:var(--red);border-color:rgba(255,77,109,.4)}
+/* ── NAV MOBILE ── */
+@media(max-width:640px){
+  .nav{height:auto;padding:10px 16px;gap:8px;flex-wrap:wrap}
+  .nav-logo{font-size:9px}
+  .nav-sep{display:none}
+  .nav-name{font-size:11px}.nav-sub{font-size:8px}
+  .nav-tabs{order:10;width:100%;border-top:1px solid var(--b1);margin:4px -16px 0;padding:0 16px}
+  .nav-tab{height:36px;font-size:8px;padding:0 10px}
+  .gh-status{display:none}
+  .log-btn{font-size:8px;padding:5px 9px}
+  .settings-btn{font-size:8px;padding:4px 7px}
+  .avail{font-size:8px;padding:2px 6px}
+}
+
+/* ── OVERVIEW MOBILE ── */
 @media(max-width:800px){
-  .hero{grid-template-columns:1fr}.hero-r{border-top:1px solid var(--b1)}
-  .two-col{grid-template-columns:1fr}.building{flex-direction:column}
-  .console-layout{grid-template-columns:1fr}.con-sb{display:none}
-  .log-entry{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
+  .hero-l{padding:28px 20px}
+  .hero-r{border-top:1px solid var(--b1);grid-template-columns:1fr 1fr}
+  .building{flex-direction:column;padding:16px 20px;gap:12px}
+  .bb-right{margin-left:0;text-align:left;display:flex;align-items:center;gap:12px}
+  .bb-bar{margin-left:0;width:80px}
+  .two-col{grid-template-columns:1fr}
+  .vel-wrap{border-right:none;border-bottom:1px solid var(--b1)}
+  .log-entry{grid-template-columns:1fr;gap:8px}
+  .le-hrs{text-align:left}
+  .arch-wrap{padding:16px}
+  .sec-hdr{padding:12px 16px}
+  .skills-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .proj-grid{grid-template-columns:1fr}
+  .hm-wrap{padding:14px 16px}
+  .footer{flex-direction:column;align-items:flex-start;gap:8px}
+  .reset-btn{margin-left:0}
+}
+
+/* ── SQL CONSOLE MOBILE ── */
+@media(max-width:800px){
+  .console-layout{grid-template-columns:1fr;min-height:auto}
+  .con-sb{display:none}
+  .ed-bar{flex-wrap:wrap;gap:6px;padding:8px 10px}
+  .ed-title{font-size:7px}
+  .ed-ta{font-size:9px;min-height:120px;max-height:35vh}
+  .ed-lines{font-size:9px}
+  .ed-hl{font-size:9px}
+  .res-tbl{font-size:9px}
+  .res-tbl th{font-size:6px;padding:6px 8px}
+  .res-tbl td{padding:6px 8px}
 }
 </style>
 </head>
