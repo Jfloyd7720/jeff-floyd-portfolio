@@ -330,7 +330,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
     <div class="modal-body">
       <div class="field"><div class="fl">GitHub username</div><input class="fi" id="gh-user" type="text" placeholder="Jfloyd7720" autocomplete="off" spellcheck="false"/></div>
       <div class="field"><div class="fl">Personal access token</div><input class="fi" id="gh-tok" type="password" placeholder="ghp_••••••••••••" autocomplete="off" spellcheck="false"/><div class="fhint">Needs repo scope only · stored in your browser · never sent anywhere except github.com</div></div>
-      <div class="field"><div class="fl">Repo name</div><input class="fi" id="gh-repo" type="text" value="de-study-log" autocomplete="off" spellcheck="false"/></div>
+      <div class="field"><div class="fl">Repo name</div><input class="fi" id="gh-repo" type="text" value="-de-study-log" autocomplete="off" spellcheck="false"/></div>
       <button class="btn-s" onclick="testConn()" style="width:100%">Test connection</button>
       <div id="test-res" style="font-family:var(--mono);font-size:9px;padding:9px 12px;border-radius:4px;display:none;line-height:1.6"></div>
     </div>
@@ -526,7 +526,7 @@ const SCHEMA_DEF={
 
 /* ── STATE ── */
 let logs=[];
-let ghCfg={username:'',token:'',repo:'de-study-log'};
+let ghCfg={username:'',token:'',repo:'-de-study-log'};
 let commitCount=0;
 let activeCode=0;
 let sqlHist=[];
@@ -539,7 +539,7 @@ let lcId=0;
    Keep your repo public and this just works.
 ───────────────────────────────────────── */
 const PUBLIC_USER='Jfloyd7720';
-const PUBLIC_REPO='de-study-log';
+const PUBLIC_REPO='-de-study-log';
 
 async function syncFromGitHub(){
   /* Always fetch using the public raw URL — works for anyone, no token required */
@@ -693,14 +693,14 @@ function closeSettings(){document.getElementById('settings-modal').classList.rem
 function saveSettings(){
   ghCfg.username=document.getElementById('gh-user').value.trim();
   ghCfg.token=document.getElementById('gh-tok').value.trim();
-  ghCfg.repo=document.getElementById('gh-repo').value.trim()||'de-study-log';
+  ghCfg.repo=document.getElementById('gh-repo').value.trim()||'-de-study-log';
   try{localStorage.setItem(GH_SK,JSON.stringify(ghCfg));}catch(e){}
   updateGHStatus();closeSettings();
   toast('ok','Connected',`GitHub connected as @${ghCfg.username}`);
   /* Immediately sync so the new device gets data right away */
   syncFromGitHub();
 }
-function clearSettings(){ghCfg={username:'',token:'',repo:'de-study-log'};try{localStorage.removeItem(GH_SK);}catch(e){}updateGHStatus();closeSettings();}
+function clearSettings(){ghCfg={username:'',token:'',repo:'-de-study-log'};try{localStorage.removeItem(GH_SK);}catch(e){}updateGHStatus();closeSettings();}
 async function testConn(){
   const u=document.getElementById('gh-user').value.trim(),t=document.getElementById('gh-tok').value.trim(),r=document.getElementById('gh-repo').value.trim()||'de-study-log';
   const el=document.getElementById('test-res');el.style.display='block';el.style.color='#5a5a7a';el.textContent='Testing…';
