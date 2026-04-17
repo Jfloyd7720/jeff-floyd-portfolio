@@ -476,7 +476,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:h
 </div>
 
 <div><div class="sec-hdr"><div class="sec-label">Skills — hours logged</div><div class="sec-tag" id="sk-tag">0h total</div></div><div class="skills-grid" id="sk-grid"></div></div>
-<div class="lc-section" style="border-bottom:1px solid var(--b1)"><div class="sec-hdr"><div class="sec-label">LeetCode breakdown</div><div class="sec-tag" id="lc-tag">0 problems</div></div><div class="lc-grid" id="lc-grid"></div></div>
+<div class="lc-section" style="border-bottom:1px solid var(--b1)">
+  <div class="sec-hdr">
+    <div class="sec-label">LeetCode</div>
+    <div class="sec-tag" id="lc-tag">0 problems</div>
+    <div style="margin-left:auto;font-family:var(--mono);font-size:7px;color:#3a3a52;display:flex;align-items:center;gap:5px">
+      <div style="width:4px;height:4px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite"></div>live from leetcode.com
+    </div>
+  </div>
+  <div id="lc-live-panel"></div>
+  <div id="lc-grid" class="lc-grid" style="border-top:1px solid var(--b1)"></div>
+</div>
 
 <div class="two-col">
   <div class="vel-wrap">
@@ -625,14 +635,78 @@ function mergeRemote(remote){
   renderAll();
 }
 
+/* ─────────────────────────────────────────
+   LEETCODE LIVE SYNC
+   Fetches real solve counts from the public
+   LeetCode stats API on every page load.
+───────────────────────────────────────── */
+let lcLive={easy:0,medium:0,hard:0,total:0,loaded:false};
+
+async function fetchLeetCode(){
+  try{
+    const res=await fetch('https://leetcode-stats.tashif.codes/jfloyd13',{cache:'no-store'});
+    if(!res.ok)return;
+    const d=await res.json();
+    if(d.status!=='success')return;
+    lcLive={
+      easy:d.easySolved||0,
+      medium:d.mediumSolved||0,
+      hard:d.hardSolved||0,
+      total:d.totalSolved||0,
+      acceptance:d.acceptanceRate||0,
+      ranking:d.ranking||0,
+      loaded:true
+    };
+    renderLCLive();
+  }catch(e){console.warn('LeetCode sync failed:',e.message);}
+}
+
+function renderLCLive(){
+  if(!lcLive.loaded)return;
+  /* Update the metric card */
+  set('m-lc',lcLive.total);
+  set('m-lc-sub',`${lcLive.medium} medium · ${lcLive.hard} hard`);
+  bar('mf-lc',Math.min(100,lcLive.total/300*100));
+  /* Update the LeetCode section header tag */
+  set('lc-tag',`${lcLive.total} solved · live`);
+  /* Render the live breakdown panel */
+  const el=document.getElementById('lc-live-panel');
+  if(!el)return;
+  const pctE=Math.round(lcLive.easy/(lcLive.easy||1)*100);
+  const maxV=Math.max(lcLive.easy,lcLive.medium,lcLive.hard,1);
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));border-bottom:1px solid var(--b1)">
+      <div style="padding:18px 20px;border-right:1px solid var(--b1)">
+        <div style="font-family:var(--mono);font-size:7px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Easy</div>
+        <div style="font-family:var(--mono);font-size:1.8rem;font-weight:600;color:#00e5a0;line-height:1;margin-bottom:6px">${lcLive.easy}</div>
+        <div style="height:1px;background:var(--b1)"><div style="height:1px;background:#00e5a0;width:${Math.round(lcLive.easy/maxV*100)}%;transition:width 1.5s"></div></div>
+      </div>
+      <div style="padding:18px 20px;border-right:1px solid var(--b1)">
+        <div style="font-family:var(--mono);font-size:7px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Medium</div>
+        <div style="font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--amber);line-height:1;margin-bottom:6px">${lcLive.medium}</div>
+        <div style="height:1px;background:var(--b1)"><div style="height:1px;background:var(--amber);width:${Math.round(lcLive.medium/maxV*100)}%;transition:width 1.5s"></div></div>
+      </div>
+      <div style="padding:18px 20px;border-right:1px solid var(--b1)">
+        <div style="font-family:var(--mono);font-size:7px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Hard</div>
+        <div style="font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--red);line-height:1;margin-bottom:6px">${lcLive.hard}</div>
+        <div style="height:1px;background:var(--b1)"><div style="height:1px;background:var(--red);width:${Math.round(lcLive.hard/maxV*100)}%;transition:width 1.5s"></div></div>
+      </div>
+      <div style="padding:18px 20px">
+        <div style="font-family:var(--mono);font-size:7px;color:#5a5a7a;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Acceptance</div>
+        <div style="font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--cyan);line-height:1;margin-bottom:6px">${lcLive.acceptance}%</div>
+        <div style="font-family:var(--mono);font-size:8px;color:#3a3a52">rank #${lcLive.ranking.toLocaleString()}</div>
+      </div>
+    </div>`;
+}
+
 function loadState(){
   try{logs=JSON.parse(localStorage.getItem(SK)||'[]');}catch(e){logs=[];}
   try{const g=JSON.parse(localStorage.getItem(GH_SK)||'{}');if(g.username)ghCfg=g;}catch(e){}
   commitCount=parseInt(localStorage.getItem(GH_SK+'_c')||'0');
   updateGHStatus();
   renderAll();
-  /* Kick off background sync — updates UI if remote is ahead of local */
   syncFromGitHub();
+  fetchLeetCode();
 }
 function saveState(){try{localStorage.setItem(SK,JSON.stringify(logs));}catch(e){}}
 
@@ -801,9 +875,9 @@ function renderLC(){
   const byTopic=lcByTopic();const topics=Object.entries(byTopic).sort((a,b)=>(b[1].medium+b[1].hard)-(a[1].medium+a[1].hard));
   const maxTotal=Math.max(...topics.map(([,v])=>v.medium+v.hard),1);
   const totalLC=topics.reduce((a,[,v])=>a+v.medium+v.hard,0);
-  set('lc-tag',totalLC+' problems · '+topics.length+' topics');
+  set('lc-tag',`${lcLive.loaded?lcLive.total+' solved':totalLC+' logged'}`);
   const el=document.getElementById('lc-grid');
-  if(!topics.length){el.innerHTML='<div style="padding:28px;font-family:var(--mono);font-size:9px;color:#3a3a52;grid-column:1/-1">No LeetCode logged yet — add problems when logging a session</div>';return;}
+  if(!topics.length){el.innerHTML='<div style="padding:28px;font-family:var(--mono);font-size:9px;color:#3a3a52;grid-column:1/-1">No topics logged yet — add problems per topic when logging a session</div>';return;}
   el.innerHTML=topics.map(([topic,{medium,hard}])=>{const total=medium+hard;return`<div class="lc-cell"><div class="lct-name">${topic}</div><div class="lct-counts">${medium?`<span class="lct-badge lct-med">${medium} med</span>`:''} ${hard?`<span class="lct-badge lct-hard">${hard} hard</span>`:''}</div><div class="lct-bar"><div class="lct-fill" style="width:${Math.round(total/maxTotal*100)}%;background:${hard>medium?'var(--red)':'var(--amber)'}"></div></div></div>`;}).join('');
 }
 
